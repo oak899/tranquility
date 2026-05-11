@@ -62,6 +62,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    # Explicit entry so gift card art is always bundled (run flutter pub get after pull).
+    - assets/images/giftcard_lifestyle.png
 
   fonts:
     - family: TranquilityFaBrands

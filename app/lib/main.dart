@@ -445,27 +445,37 @@ class _HomeImmersiveHero extends StatelessWidget {
                   const SizedBox(height: 20),
                   _RevealStagger(
                     animation: badgeAnim,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.35),
-                        borderRadius: BorderRadius.circular(999),
-                        border: Border.all(color: Colors.white.withOpacity(0.2)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Icon(Icons.star_rounded, color: kGold.withOpacity(0.95), size: 20),
-                          const SizedBox(width: 8),
-                          Text(
-                            '4.9 rated · Loved by 1,000+ clients',
-                            style: GoogleFonts.inter(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFFFFFBF5),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          alignment: Alignment.center,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.35),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(color: Colors.white.withOpacity(0.2)),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Icon(Icons.star_rounded, color: kGold.withOpacity(0.95), size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '4.9 rated · Loved by 1,000+ clients',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFFFFFBF5),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
@@ -1918,11 +1928,14 @@ class ServiceBlock {
     required this.title,
     this.subtitle,
     required this.items,
+    this.bannerImageAsset,
   });
   final String? badge;
   final String title;
   final String? subtitle;
   final List<ServiceItem> items;
+  /// When set, category banner uses this instead of the first service image (avoids duplicate hero + first card).
+  final String? bannerImageAsset;
 }
 
 /// Service catalog aligned with https://tranquilityhydrotherapy.com/services.html
@@ -1930,6 +1943,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
   ServiceBlock(
     badge: 'The Classics',
     title: 'Signature Head Spa Rituals',
+    bannerImageAsset: 'assets/images/about1.jpg',
     items: <ServiceItem>[
       ServiceItem(
         title: 'Essential Head Spa',
@@ -1963,6 +1977,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
   ServiceBlock(
     badge: 'Ultimate Rejuvenation',
     title: 'Head Spa & Facial',
+    bannerImageAsset: 'assets/images/about3.jpg',
     items: <ServiceItem>[
       ServiceItem(
         title: 'Essential Head Spa & Facial',
@@ -1979,7 +1994,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
       ServiceItem(
         title: 'Luxury Head Spa & Facial',
         price: '90 min · \$208',
-        imageAsset: 'assets/images/image_6.jpg',
+        imageAsset: 'assets/images/image_2.jpg',
         summary: 'The pinnacle of luxury. Complete head-to-toe relaxation and anti-aging care.',
         points: <String>[
           'All Essential Facial & Spa benefits',
@@ -1993,6 +2008,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
   ServiceBlock(
     badge: 'Advanced Skincare',
     title: 'Clinical Facial Treatments',
+    bannerImageAsset: 'assets/images/about2.jpg',
     items: <ServiceItem>[
       ServiceItem(
         title: 'ALGOMASK+ Customized Facial',
@@ -2056,6 +2072,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
   ServiceBlock(
     badge: 'Specialized Care',
     title: 'Targeted Scalp Therapies',
+    bannerImageAsset: 'assets/images/about4.jpg',
     items: <ServiceItem>[
       ServiceItem(
         title: 'Purifying Scalp Therapy',
@@ -2076,7 +2093,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
       ServiceItem(
         title: 'Calming Scalp Therapy',
         price: '90 min · \$198',
-        imageAsset: 'assets/images/image_5.jpg',
+        imageAsset: 'assets/images/about6.jpg',
         summary:
             'For sensitive or damaged scalps. Features an epithelial-regenerating mask and gentle hypoallergenic care to repair the skin barrier.',
         points: <String>[],
@@ -2087,6 +2104,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
     badge: 'Duo Spa',
     title: 'Duo Spa Experiences',
     subtitle: 'Perfect for couples, friends & family',
+    bannerImageAsset: 'assets/images/about4.jpg',
     items: <ServiceItem>[
       ServiceItem(
         title: 'Head Spa ×2',
@@ -2098,7 +2116,7 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
       ServiceItem(
         title: 'Head Spa + Facial',
         price: 'Contact to book',
-        imageAsset: 'assets/images/image_6.jpg',
+        imageAsset: 'assets/images/about5.jpg',
         summary: 'Full relaxation combined with skin rejuvenation.',
         points: <String>[],
       ),
@@ -2261,7 +2279,7 @@ class _ServiceCategoryBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ServiceItem lead = block.items.first;
+    final String bannerAsset = block.bannerImageAsset ?? block.items.first.imageAsset;
     return _RevealStagger(
       animation: animation,
       child: ClipRRect(
@@ -2270,7 +2288,7 @@ class _ServiceCategoryBanner extends StatelessWidget {
           alignment: Alignment.bottomLeft,
           children: <Widget>[
             Image.asset(
-              lead.imageAsset,
+              bannerAsset,
               height: 168,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -3119,6 +3137,8 @@ class _MembershipPlanCard extends StatelessWidget {
 class _GiftCardShowcase extends StatelessWidget {
   const _GiftCardShowcase();
 
+  static const String _kGiftLifestyle = 'assets/images/giftcard_lifestyle.png';
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -3127,53 +3147,17 @@ class _GiftCardShowcase extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          SizedBox(
-            height: 200,
-            child: Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                Image.asset('assets/images/giftcard.png', fit: BoxFit.cover),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: <Color>[
-                        Colors.black.withOpacity(0.2),
-                        Colors.black.withOpacity(0.65),
-                      ],
-                    ),
-                  ),
+          ColoredBox(
+            color: const Color(0xFFF5F2ED),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.asset(
+                  _kGiftLifestyle,
+                  fit: BoxFit.fitWidth,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(18),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
-                        'Gift of choice',
-                        style: GoogleFonts.inter(
-                          color: const Color(0xFFFFFBEB),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 2.2,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Starting from \$50',
-                        style: GoogleFonts.playfairDisplay(
-                          color: Colors.white,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.italic,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           Padding(
