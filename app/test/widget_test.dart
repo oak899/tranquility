@@ -17,7 +17,7 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(const TranquilityApp());
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.byType(BottomAppBar), findsOneWidget);
     expect(find.byIcon(Icons.home_rounded), findsOneWidget);

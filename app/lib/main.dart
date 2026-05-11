@@ -2,13 +2,37 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const Color kGold = Color(0xFFC49B63);
 const Color kCharcoal = Color(0xFF1A1A1A);
 const Color kCream = Color(0xFFF8F5F0);
 const String kBookNowUrl =
     'https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq';
+
+/// Social links from https://tranquilityhydrotherapy.com/index.html
+const String kInstagramUrl = 'https://www.instagram.com/tranquility.oakbrook/';
+const String kFacebookUrl = 'https://www.facebook.com/p/Tranquility-Hydrotherapy-61570059159325/';
+const String kYelpUrl = 'https://www.yelp.com/biz/tranquility-hydrotherapy-oakbrook-terrace-2';
+
+/// Brand marks resolved via public favicon endpoints (same sites as salon retail partners).
+const String kOwayBrandIconUrl =
+    'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://pro.owayusa.com&size=128';
+const String kGmCollinBrandIconUrl =
+    'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://gmcollin.com&size=128';
+
+Future<bool> launchTranquilityBookingUrl() async {
+  final Uri uri = Uri.parse(kBookNowUrl);
+  return launchUrl(uri, mode: LaunchMode.externalApplication);
+}
+
+Future<bool> launchExternalUrl(String url) async {
+  final Uri? uri = Uri.tryParse(url);
+  if (uri == null) return false;
+  return launchUrl(uri, mode: LaunchMode.externalApplication);
+}
 
 void main() {
   runApp(const TranquilityApp());
@@ -19,10 +43,12 @@ class TranquilityApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme scheme = ColorScheme.fromSeed(seedColor: kGold, brightness: Brightness.light);
+    final ThemeData seed = ThemeData(colorScheme: scheme, useMaterial3: true);
+    final TextTheme inter = GoogleFonts.interTextTheme(seed.textTheme);
     return MaterialApp(
       title: 'Tranquility Hydrotherapy',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: kGold, brightness: Brightness.light),
+      theme: seed.copyWith(
         scaffoldBackgroundColor: kCream,
         appBarTheme: const AppBarTheme(
           backgroundColor: kCharcoal,
@@ -35,28 +61,61 @@ class TranquilityApp extends StatelessWidget {
           iconTheme: WidgetStatePropertyAll(IconThemeData(color: Colors.white)),
           labelTextStyle: WidgetStatePropertyAll(TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
         ),
-        textTheme: const TextTheme(
-          headlineSmall: TextStyle(fontSize: 27, fontWeight: FontWeight.w700, color: kCharcoal, height: 1.2),
-          titleMedium: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: kCharcoal),
-          bodyLarge: TextStyle(fontSize: 16, height: 1.5, color: Color(0xFF2E2E2E)),
-          bodyMedium: TextStyle(fontSize: 15, height: 1.45, color: Color(0xFF2E2E2E)),
+        textTheme: inter.copyWith(
+          headlineSmall: GoogleFonts.playfairDisplay(
+            fontSize: 28,
+            fontWeight: FontWeight.w700,
+            fontStyle: FontStyle.italic,
+            color: kCharcoal,
+            height: 1.12,
+          ),
+          titleLarge: GoogleFonts.playfairDisplay(
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
+            fontStyle: FontStyle.italic,
+            color: kCharcoal,
+            height: 1.15,
+          ),
+          titleMedium: GoogleFonts.inter(
+            fontSize: 17,
+            fontWeight: FontWeight.w600,
+            height: 1.25,
+            color: kCharcoal,
+          ),
+          titleSmall: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            height: 1.25,
+            color: kCharcoal,
+          ),
+          bodyLarge: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+            height: 1.55,
+            color: const Color(0xFF57534E),
+          ),
+          bodyMedium: GoogleFonts.inter(
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            height: 1.5,
+            color: const Color(0xFF57534E),
+          ),
+          bodySmall: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            height: 1.45,
+            color: const Color(0xFF78716C),
+          ),
         ),
         cardTheme: CardTheme(
           color: Colors.white.withOpacity(0.93),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: 2,
         ),
-        useMaterial3: true,
       ),
       home: const SiteShell(),
     );
   }
-}
-
-class PrimaryTab {
-  const PrimaryTab({required this.title, required this.icon});
-  final String title;
-  final IconData icon;
 }
 
 class SiteShell extends StatefulWidget {
@@ -66,21 +125,15 @@ class SiteShell extends StatefulWidget {
 }
 
 class _SiteShellState extends State<SiteShell> {
-  static const List<PrimaryTab> _tabs = <PrimaryTab>[
-    PrimaryTab(title: 'Home', icon: Icons.home_rounded),
-    PrimaryTab(title: 'Menu', icon: Icons.restaurant_menu_rounded),
-    PrimaryTab(title: 'Membership', icon: Icons.workspace_premium_rounded),
-    PrimaryTab(title: 'About', icon: Icons.spa_rounded),
-  ];
-
   int _index = 0;
+  int _lastIndex = 0;
 
   Widget _body() {
     switch (_index) {
       case 0:
         return const HomePage();
       case 1:
-        return const MenuPage();
+        return const ServicesPage();
       case 2:
         return const MembershipPage();
       default:
@@ -128,44 +181,45 @@ class _SiteShellState extends State<SiteShell> {
   }
 
   void _bookNow() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Book Now link copied/shown in Home page card.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
+    launchTranquilityBookingUrl().then((bool ok) {
+      if (!mounted || ok) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open the booking page.')),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final PrimaryTab tab = _tabs[_index];
     return Scaffold(
       appBar: AppBar(
-        title: Text(tab.title),
+        title: null,
         actions: <Widget>[
           IconButton(onPressed: _openSecondaryMenu, icon: const Icon(Icons.apps_rounded), tooltip: 'More'),
         ],
       ),
-      body: _body(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: SizedBox(
-        width: 74,
-        height: 74,
-        child: FloatingActionButton(
-          backgroundColor: kGold,
-          foregroundColor: kCharcoal,
-          shape: const CircleBorder(),
-          onPressed: _bookNow,
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.calendar_month_rounded, size: 22),
-              SizedBox(height: 2),
-              Text('Book', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
-            ],
-          ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 420),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          final double dx = _index >= _lastIndex ? 0.08 : -0.08;
+          final Animation<Offset> offset = Tween<Offset>(
+            begin: Offset(dx, 0),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(position: offset, child: child),
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey<int>(_index),
+          child: _body(),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: _AnimatedBookFab(onTap: _bookNow),
       bottomNavigationBar: BottomAppBar(
         color: kCharcoal,
         shape: const CircularNotchedRectangle(),
@@ -178,26 +232,38 @@ class _SiteShellState extends State<SiteShell> {
                 icon: Icons.home_rounded,
                 label: 'Home',
                 selected: _index == 0,
-                onTap: () => setState(() => _index = 0),
+                onTap: () => setState(() {
+                  _lastIndex = _index;
+                  _index = 0;
+                }),
               ),
               _BottomTabButton(
-                icon: Icons.restaurant_menu_rounded,
-                label: 'Menu',
+                icon: Icons.water_drop_rounded,
+                label: 'Services',
                 selected: _index == 1,
-                onTap: () => setState(() => _index = 1),
+                onTap: () => setState(() {
+                  _lastIndex = _index;
+                  _index = 1;
+                }),
               ),
               const Spacer(),
               _BottomTabButton(
                 icon: Icons.workspace_premium_rounded,
                 label: 'Member',
                 selected: _index == 2,
-                onTap: () => setState(() => _index = 2),
+                onTap: () => setState(() {
+                  _lastIndex = _index;
+                  _index = 2;
+                }),
               ),
               _BottomTabButton(
                 icon: Icons.spa_rounded,
                 label: 'About',
                 selected: _index == 3,
-                onTap: () => setState(() => _index = 3),
+                onTap: () => setState(() {
+                  _lastIndex = _index;
+                  _index = 3;
+                }),
               ),
             ],
           ),
@@ -218,18 +284,274 @@ class SecondaryScaffold extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _show = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() => _show = true);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return _PageBackground(
       imageAsset: 'assets/images/bg_4.jpg',
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: const <Widget>[
-          _HomeHero(),
+      overlayOpacity: 0.0,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 1500),
+        curve: Curves.easeInOutCubic,
+        opacity: _show ? 1 : 0,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            const _HomeHero(),
+            const SizedBox(height: 16),
+            ..._kAboutStories.map(
+              (_AboutStory story) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _AboutFlipCard(story: story),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: _HomeVisitSection(),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeVisitSection extends StatelessWidget {
+  const _HomeVisitSection();
+
+  static const List<String> _stripImages = <String>[
+    'assets/images/about1.jpg',
+    'assets/images/intro.jpg',
+    'assets/images/bg_2.jpg',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      margin: EdgeInsets.zero,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            height: 68,
+            child: Row(
+              children: <Widget>[
+                for (int i = 0; i < _stripImages.length; i++)
+                  Expanded(
+                    child: Image.asset(
+                      _stripImages[i],
+                      fit: BoxFit.cover,
+                      height: 68,
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: 3,
+            color: kGold.withOpacity(0.85),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.all(11),
+                      decoration: BoxDecoration(
+                        color: kGold.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.schedule_rounded, color: kCharcoal, size: 28),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Open hours',
+                            style: GoogleFonts.playfairDisplay(
+                              fontSize: 21,
+                              fontWeight: FontWeight.w700,
+                              color: kCharcoal,
+                              height: 1.1,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.calendar_today_outlined, size: 15, color: kGold.withOpacity(0.95)),
+                              const SizedBox(width: 6),
+                              Text(
+                                'Mon – Sun',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: const Color(0xFF57534E),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '10:00 AM – 8:00 PM',
+                            style: GoogleFonts.inter(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w700,
+                              color: kCharcoal,
+                              letterSpacing: 0.2,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.location_on_outlined, size: 20, color: kGold.withOpacity(0.95)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '17W580 Butterfield Rd Suit G, 2F · Oakbrook Terrace, IL 60181',
+                        style: GoogleFonts.inter(
+                          fontSize: 13,
+                          height: 1.45,
+                          fontWeight: FontWeight.w400,
+                          color: const Color(0xFF57534E),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Divider(height: 1, color: Colors.black.withOpacity(0.06)),
+                const SizedBox(height: 16),
+                Text(
+                  'Follow us',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                    color: kCharcoal,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Stay in touch for specials, hours, and new treatments.',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    height: 1.4,
+                    color: const Color(0xFF78716C),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                const Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  alignment: WrapAlignment.start,
+                  children: <Widget>[
+                    _SocialLaunchButton(
+                      label: 'Instagram',
+                      url: kInstagramUrl,
+                      backgroundColor: Color(0xFFE4405F),
+                      icon: FontAwesomeIcons.instagram,
+                    ),
+                    _SocialLaunchButton(
+                      label: 'Facebook',
+                      url: kFacebookUrl,
+                      backgroundColor: Color(0xFF1877F2),
+                      icon: FontAwesomeIcons.facebookF,
+                    ),
+                    _SocialLaunchButton(
+                      label: 'Yelp',
+                      url: kYelpUrl,
+                      backgroundColor: Color(0xFFD32323),
+                      icon: FontAwesomeIcons.yelp,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _SocialLaunchButton extends StatelessWidget {
+  const _SocialLaunchButton({
+    required this.label,
+    required this.url,
+    required this.backgroundColor,
+    required this.icon,
+  });
+
+  final String label;
+  final String url;
+  final Color backgroundColor;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(12),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          launchExternalUrl(url).then((bool ok) {
+            if (!context.mounted || ok) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Could not open $label')),
+            );
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              FaIcon(icon, color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Text(
+                label,
+                style: GoogleFonts.inter(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(Icons.open_in_new_rounded, color: Colors.white.withOpacity(0.9), size: 16),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -240,37 +562,51 @@ class _HomeHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              height: 42,
-              child: SvgPicture.asset('assets/images/logo.svg'),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Welcome to\nTranquility\nHydrotherapy',
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 42,
-                fontWeight: FontWeight.w700,
-                color: kCharcoal,
-                height: 1.05,
+    final double heroHeight = math.max(520, MediaQuery.of(context).size.height * 0.86);
+    final double logoHeight = math.max(320, MediaQuery.of(context).size.height * 0.58);
+    return SizedBox(
+      width: double.infinity,
+      height: heroHeight,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[
+              Colors.white.withOpacity(0.16),
+              Colors.black.withOpacity(0.36),
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SizedBox(
+                height: logoHeight,
+                child: Transform.scale(
+                  scale: 2.2,
+                  child: SvgPicture.asset(
+                    'assets/images/logo.svg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              'Where Luxury Meets Scalp Health',
-              style: GoogleFonts.cormorantGaramond(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-                color: kGold,
-                height: 1.1,
+              const SizedBox(height: 18),
+              Text(
+                'Welcome to Tranquility Hydrotherapy – Where Luxury Meets Scalp Health',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.cormorantGaramond(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                  height: 1.2,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -289,41 +625,41 @@ class _AboutStory {
   final String body;
 }
 
+const List<_AboutStory> _kAboutStories = <_AboutStory>[
+  _AboutStory(
+    image: 'assets/images/about1.jpg',
+    title: 'The Importance of Scalp Health',
+    body:
+        'A healthy scalp is the foundation of beautiful, strong hair. At Tranquility Hydrotherapy, we understand that scalp wellness is essential not only for vibrant hair growth but also for overall well-being. A well-nourished scalp promotes circulation, balances oil production, and prevents issues such as dandruff, dryness, and hair thinning. By focusing on scalp health, we help you address underlying concerns and achieve long-term vitality for both your hair and scalp.',
+  ),
+  _AboutStory(
+    image: 'assets/images/about2.jpg',
+    title: 'Organic Excellence',
+    body:
+        'We are committed to using only the finest organic products, carefully selected for their purity, effectiveness, and gentle impact on both your scalp and the environment. Free from harmful chemicals, our treatments nourish and protect while providing deep cleansing and hydration. Each product is crafted to naturally restore balance and vitality to your scalp, ensuring optimal results with lasting benefits.',
+  ),
+  _AboutStory(
+    image: 'assets/images/about3.jpg',
+    title: 'Advanced Technology for Optimal Care',
+    body:
+        'To deliver a truly bespoke experience, we utilize the most advanced technology available in scalp care. From precision scalp analysis tools to high-frequency devices that stimulate blood flow and encourage healthy hair growth, our equipment ensures every treatment is customized to meet your specific needs. This cutting-edge approach allows us to go beyond surface care, providing deeper, more effective results.',
+  ),
+  _AboutStory(
+    image: 'assets/images/about4.jpg',
+    title: 'Unique and Personalized Services',
+    body:
+        'Every client at Tranquility Hydrotherapy receives a tailor-made experience. Our expert team will assess your scalp condition, identify your needs, and curate a selection of personalized treatments just for you. Whether you are looking to address specific concerns or simply indulge in a luxurious, relaxing experience, our unique services are designed to soothe, rejuvenate, and transform. From detoxifying treatments to calming scalp massages, we offer a complete sensory escape.',
+  ),
+  _AboutStory(
+    image: 'assets/images/about5.jpg',
+    title: 'Experience the Pinnacle of Luxury',
+    body:
+        'From the moment you arrive, you will be immersed in a world of tranquility and luxury. Our serene environment, combined with our passion for excellence, ensures that your visit is not only deeply restorative but also indulgent. At Tranquility Hydrotherapy, you will experience the finest scalp care treatments designed to renew both your scalp and your spirit.',
+  ),
+];
+
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});
-
-  static const List<_AboutStory> _stories = <_AboutStory>[
-    _AboutStory(
-      image: 'assets/images/about1.jpg',
-      title: 'The Importance of Scalp Health',
-      body:
-          'A healthy scalp is the foundation of beautiful, strong hair. At Tranquility Hydrotherapy, we understand that scalp wellness is essential not only for vibrant hair growth but also for overall well-being. A well-nourished scalp promotes circulation, balances oil production, and prevents issues such as dandruff, dryness, and hair thinning. By focusing on scalp health, we help you address underlying concerns and achieve long-term vitality for both your hair and scalp.',
-    ),
-    _AboutStory(
-      image: 'assets/images/about2.jpg',
-      title: 'Organic Excellence',
-      body:
-          'We are committed to using only the finest organic products, carefully selected for their purity, effectiveness, and gentle impact on both your scalp and the environment. Free from harmful chemicals, our treatments nourish and protect while providing deep cleansing and hydration. Each product is crafted to naturally restore balance and vitality to your scalp, ensuring optimal results with lasting benefits.',
-    ),
-    _AboutStory(
-      image: 'assets/images/about3.jpg',
-      title: 'Advanced Technology for Optimal Care',
-      body:
-          'To deliver a truly bespoke experience, we utilize the most advanced technology available in scalp care. From precision scalp analysis tools to high-frequency devices that stimulate blood flow and encourage healthy hair growth, our equipment ensures every treatment is customized to meet your specific needs. This cutting-edge approach allows us to go beyond surface care, providing deeper, more effective results.',
-    ),
-    _AboutStory(
-      image: 'assets/images/about4.jpg',
-      title: 'Unique and Personalized Services',
-      body:
-          'Every client at Tranquility Hydrotherapy receives a tailor-made experience. Our expert team will assess your scalp condition, identify your needs, and curate a selection of personalized treatments just for you. Whether you are looking to address specific concerns or simply indulge in a luxurious, relaxing experience, our unique services are designed to soothe, rejuvenate, and transform. From detoxifying treatments to calming scalp massages, we offer a complete sensory escape.',
-    ),
-    _AboutStory(
-      image: 'assets/images/about5.jpg',
-      title: 'Experience the Pinnacle of Luxury',
-      body:
-          'From the moment you arrive, you will be immersed in a world of tranquility and luxury. Our serene environment, combined with our passion for excellence, ensures that your visit is not only deeply restorative but also indulgent. At Tranquility Hydrotherapy, you will experience the finest scalp care treatments designed to renew both your scalp and your spirit.',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -334,10 +670,32 @@ class AboutPage extends StatelessWidget {
         children: <Widget>[
           const _TopBanner(
             title: 'About Us',
-            subtitle: 'Image + Story (click arrow to flip)',
+            subtitle: 'Contact / Gift Cards / FAQ',
           ),
-          const SizedBox(height: 8),
-          ..._stories.map((_AboutStory story) => _AboutFlipCard(story: story)),
+          const _SectionCard(
+            title: 'Gift Cards',
+            body:
+                'Surprise your loved ones with the gift of relaxation and healthy scalp care. Gift cards can be used toward all available services.',
+          ),
+          const _SectionCard(
+            title: 'Contact Us',
+            body:
+                '17W580 Butterfield Rd Suit G, 2F, Oakbrook Terrace, IL 60181\n(630) 590-3188\ntranquilityhydrotherapy@gmail.com',
+          ),
+          ...kFaqItems.map(
+            (FaqItem f) => Card(
+              margin: const EdgeInsets.only(bottom: 10),
+              child: ExpansionTile(
+                title: Text(f.q, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16)),
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Text(f.a),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -355,7 +713,7 @@ class _AboutFlipCard extends StatefulWidget {
 class _AboutFlipCardState extends State<_AboutFlipCard> with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 500),
+    duration: const Duration(milliseconds: 650),
   );
   bool _showBack = false;
 
@@ -379,25 +737,32 @@ class _AboutFlipCardState extends State<_AboutFlipCard> with SingleTickerProvide
     return Card(
       margin: const EdgeInsets.only(bottom: 14),
       clipBehavior: Clip.antiAlias,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (_, __) {
-          final double angle = _controller.value * math.pi;
-          final bool isBack = angle > math.pi / 2;
-          return Transform(
-            alignment: Alignment.center,
-            transform: Matrix4.identity()
-              ..setEntry(3, 2, 0.001)
-              ..rotateY(angle),
-            child: isBack
-                ? Transform(
-                    alignment: Alignment.center,
-                    transform: Matrix4.identity()..rotateY(math.pi),
-                    child: _AboutBack(story: widget.story, onFlip: _flip),
-                  )
-                : _AboutFront(story: widget.story, onFlip: _flip),
-          );
+      child: GestureDetector(
+        onTap: _flip,
+        onHorizontalDragEnd: (DragEndDetails details) {
+          final double v = details.primaryVelocity ?? 0;
+          if (v.abs() > 120) _flip();
         },
+        child: AnimatedBuilder(
+          animation: CurvedAnimation(parent: _controller, curve: Curves.easeInOutCubic),
+          builder: (_, __) {
+            final double angle = _controller.value * math.pi;
+            final bool isBack = angle > math.pi / 2;
+            return Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.001)
+                ..rotateY(angle),
+              child: isBack
+                  ? Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()..rotateY(math.pi),
+                      child: _AboutBack(story: widget.story, onFlip: _flip),
+                    )
+                  : _AboutFront(story: widget.story, onFlip: _flip),
+            );
+          },
+        ),
       ),
     );
   }
@@ -438,17 +803,20 @@ class _AboutFront extends StatelessWidget {
           right: 14,
           bottom: 14,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.45),
+              color: Colors.black.withOpacity(0.52),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               story.title,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
               style: GoogleFonts.playfairDisplay(
                 color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
               ),
             ),
           ),
@@ -465,36 +833,67 @@ class _AboutBack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 340,
       width: double.infinity,
-      color: Colors.white,
       child: Stack(
         children: <Widget>[
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.38,
+              child: Image.asset(story.image, fit: BoxFit.cover),
+            ),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.black.withOpacity(0.55),
+                    Colors.black.withOpacity(0.82),
+                  ],
+                ),
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    story.title,
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: kCharcoal,
-                    ),
+            padding: const EdgeInsets.fromLTRB(14, 52, 14, 14),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: const Color(0xE6161616),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.white.withOpacity(0.12)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        story.title,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                          color: const Color(0xFFFFF7ED),
+                          height: 1.15,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        story.body,
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w400,
+                          height: 1.5,
+                          color: const Color(0xFFE7E5E4),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  Text(
-                    story.body,
-                    style: GoogleFonts.cormorantGaramond(
-                      fontSize: 24,
-                      height: 1.18,
-                      color: const Color(0xFF2E2E2E),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -527,270 +926,604 @@ class ServiceItem {
     required this.imageAsset,
     required this.summary,
     required this.points,
+    this.highlightsLabel = 'Highlights included',
   });
   final String title;
   final String price;
   final String imageAsset;
   final String summary;
   final List<String> points;
+  /// Shown above the bullet list (e.g. "Benefits" for clinical facials).
+  final String highlightsLabel;
 }
 
-const List<ServiceItem> kAllServices = <ServiceItem>[
-  ServiceItem(
-    title: 'Relaxing Scalp Hydrotherapy',
-    price: '\$128 / 60mins',
-    imageAsset: 'assets/images/image_2.jpg',
-    summary: 'Service Process',
-    points: <String>[
-      'Scalp testing',
-      'Essential oil relaxation',
-      'Scalp relaxation',
-      'Neck & shoulder relaxation',
-      'Scalp deep cleansing',
-      'Scalp Effectiveness Shampoo',
-      'Nourishing Hair Care',
-      'Hydrotherapy Nano Eraporation',
-      'Micro-mist steam therapy',
-      'High-Frequency comb antimicrobial hair care',
-      'Dyson dryer blew dry the hair',
+class ServiceBlock {
+  const ServiceBlock({
+    this.badge,
+    required this.title,
+    this.subtitle,
+    required this.items,
+  });
+  final String? badge;
+  final String title;
+  final String? subtitle;
+  final List<ServiceItem> items;
+}
+
+/// Service catalog aligned with https://tranquilityhydrotherapy.com/services.html
+const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
+  ServiceBlock(
+    badge: 'The Classics',
+    title: 'Signature Head Spa Rituals',
+    items: <ServiceItem>[
+      ServiceItem(
+        title: 'Essential Head Spa',
+        price: '60 min · \$128',
+        imageAsset: 'assets/images/image_2.jpg',
+        summary: 'A perfect introduction to deep relaxation and scalp health.',
+        points: <String>[
+          'Scalp testing & analysis',
+          'Essential oil & scalp relaxation',
+          'Neck & shoulder massage',
+          'Deep cleansing & effectiveness shampoo',
+          'Hydrotherapy nano evaporation & steam',
+          'High-frequency antimicrobial care',
+        ],
+      ),
+      ServiceItem(
+        title: 'Hydrating Head Spa',
+        price: '90 min · \$168',
+        imageAsset: 'assets/images/image_3.jpg',
+        summary: 'Extended relaxation with intense hydration and advanced therapy.',
+        points: <String>[
+          'All Essential Head Spa benefits',
+          'Healing shampoo & extended spa relaxation',
+          'Scalp oxygenation',
+          'Professional scalp essence introduction',
+          'Advanced light therapy',
+        ],
+      ),
     ],
   ),
-  ServiceItem(
-    title: 'Relaxing & Hydrating Scalp Hydrotherapy',
-    price: '\$168 / 90mins',
-    imageAsset: 'assets/images/image_3.jpg',
-    summary: 'Service Process',
-    points: <String>[
-      'Scalp testing',
-      'Essential oil relaxation',
-      'Scalp relaxation',
-      'Scalp deep cleansing',
-      'Healing shampoo',
-      'Spa relaxation',
-      'Micro-mist steam therapy',
-      'Nano hair care',
-      'Scalp oxygenation',
-      'Professional scalp essence introduction',
-      'High-Frequency comb antimicrobial hair care',
-      'Light therapy',
-      'Neck & shoulder massage',
-      'Dyson dryer blew dry the hair',
+  ServiceBlock(
+    badge: 'Ultimate Rejuvenation',
+    title: 'Head Spa & Facial',
+    items: <ServiceItem>[
+      ServiceItem(
+        title: 'Essential Head Spa & Facial',
+        price: '60 min · \$168',
+        imageAsset: 'assets/images/image_6.jpg',
+        summary: 'A holistic treatment nourishing both skin and scalp for a radiant glow.',
+        points: <String>[
+          'Facial cleansing & relaxation massage',
+          'RF energy treatment for firming',
+          'Hydrating/purifying facial mask',
+          'Deep scalp cleansing & nano hydrotherapy',
+        ],
+      ),
+      ServiceItem(
+        title: 'Luxury Head Spa & Facial',
+        price: '90 min · \$208',
+        imageAsset: 'assets/images/image_6.jpg',
+        summary: 'The pinnacle of luxury. Complete head-to-toe relaxation and anti-aging care.',
+        points: <String>[
+          'All Essential Facial & Spa benefits',
+          'Eye ion ball treatment (targets dark circles)',
+          'Extended micro-mist steam therapy',
+          'High-frequency comb antibacterial care',
+        ],
+      ),
     ],
   ),
-  ServiceItem(
-    title: 'Facial & Scalp Hydrotherapy',
-    price: '\$168 / 60mins',
-    imageAsset: 'assets/images/image_6.jpg',
-    summary: 'Complete rejuvenation for face and scalp',
-    points: <String>[
-      'Facial Cleansing (Makeup Removal)',
-      'Relaxation Facial Massage',
-      'RF Energy Treatment for Firming & Lifting',
-      'Hydrating or Purifying Facial Mask',
-      'Essential Oil Relaxation Therapy',
-      'Scalp Effectiveness Deep Shampoo',
-      'Nourishing Hair Treatment',
-      'Nano-Extraction Hydrotherapy',
-      'Neck & shoulder massage',
-      'Dyson Blow-Dry',
+  ServiceBlock(
+    badge: 'Advanced Skincare',
+    title: 'Clinical Facial Treatments',
+    items: <ServiceItem>[
+      ServiceItem(
+        title: 'ALGOMASK+ Customized Facial',
+        price: '60 min · \$169',
+        imageAsset: 'assets/images/image_8.jpg',
+        summary:
+            'Delivers instant radiance and long-lasting hydration. Suitable for all skin types and conditions.',
+        highlightsLabel: 'Benefits',
+        points: <String>[
+          'Moisturizes and tones the skin, reducing visible redness',
+          'Provides instant radiance and maintains hydration',
+          'Hydrates, soothes, and revitalizes',
+          'Recommended frequency — Intensive cure: 3–6 treatments (once a week). Maintenance: 1 treatment every 4 weeks.',
+        ],
+      ),
+      ServiceItem(
+        title: 'Oxygenating Professional',
+        price: '70 min · \$199',
+        imageAsset: 'assets/images/image_9.jpg',
+        summary:
+            'A 5-step treatment with a unique Oxygen Complex and patented Peptides to purify and restore glow.',
+        highlightsLabel: 'Benefits',
+        points: <String>[
+          'Minimizes breakouts & calms inflammation redness',
+          'Provides a mattifying effect for balanced skin',
+          'Restores luminosity and youthful glow',
+          'Color, paraben, alcohol, and fragrance-free',
+          'Recommended frequency — Maintenance: 1 treatment every 4 weeks.',
+        ],
+      ),
+      ServiceItem(
+        title: 'HYDROLIFTING Professional',
+        price: '70 min · \$199',
+        imageAsset: 'assets/images/image_10.jpg',
+        summary:
+            'An uplifting treatment designed to restore firmness and youthful appearance for sagging skin.',
+        highlightsLabel: 'Benefits',
+        points: <String>[
+          'Improves visible toning of face and neck',
+          'Provides deep and lasting hydration',
+          'Enhances radiance with age-defying results',
+          'Recommended frequency — Maintenance: 1 treatment every 3 weeks.',
+        ],
+      ),
+      ServiceItem(
+        title: 'Collagen-90 Clinical',
+        price: '80 min · \$229',
+        imageAsset: 'assets/images/image_11.jpg',
+        summary:
+            'A prestigious, rejuvenating treatment featuring Collagen 90-II to reduce visible signs of aging.',
+        highlightsLabel: 'Benefits',
+        points: <String>[
+          'Minimizes fine lines and wrinkles',
+          'Rejuvenates and tightens for flawless skin',
+          'Deeply hydrates for a plump, radiant complexion',
+          'Recommended frequency — Maintenance: 1 treatment every 4 weeks.',
+        ],
+      ),
     ],
   ),
-  ServiceItem(
-    title: 'Facial & Relaxing Scalp Hydrotherapy',
-    price: '\$208 / 90mins',
-    imageAsset: 'assets/images/image_6.jpg',
-    summary: 'Complete rejuvenation for face and scalp',
-    points: <String>[
-      'Facial Cleansing (Makeup Removal)',
-      'Facial Massage for Relaxation',
-      'Facial RF Energy Treatment for Tightening and Lifting',
-      'Eye Ion Ball Treatment',
-      'Hydrating or Purifying Facial Mask',
-      'Scalp Analysis',
-      'Essential Oil Relaxation',
-      'Scalp Relaxation Massage',
-      'Neck and Shoulder Relaxation Massage',
-      'Deep Scalp Cleansing',
-      'Functional Scalp Shampoo Treatment',
-      'Nourishing Hair Treatment',
-      'Nano-Extraction Hydrotherapy',
-      'Micro-Mist Steam Therapy',
-      'High-Frequency Comb Antibacterial Hair Care',
-      'Dyson Blow-Dry',
+  ServiceBlock(
+    badge: 'Specialized Care',
+    title: 'Targeted Scalp Therapies',
+    items: <ServiceItem>[
+      ServiceItem(
+        title: 'Purifying Scalp Therapy',
+        price: '90 min · \$198',
+        imageAsset: 'assets/images/image_4.jpg',
+        summary:
+            'Designed to relieve itchiness, reduce inflammation, and eliminate dandruff using microcurrent ion therapy and negative ion oxygen infusion.',
+        points: <String>[],
+      ),
+      ServiceItem(
+        title: 'Regrowth Scalp Therapy',
+        price: '90 min · \$198',
+        imageAsset: 'assets/images/image_5.jpg',
+        summary:
+            'An anti-aging regimen utilizing Low-Level Laser Therapy Regeneration to prevent hair loss, heal the scalp, and promote healthy growth.',
+        points: <String>[],
+      ),
+      ServiceItem(
+        title: 'Calming Scalp Therapy',
+        price: '90 min · \$198',
+        imageAsset: 'assets/images/image_5.jpg',
+        summary:
+            'For sensitive or damaged scalps. Features an epithelial-regenerating mask and gentle hypoallergenic care to repair the skin barrier.',
+        points: <String>[],
+      ),
     ],
   ),
-  ServiceItem(
-    title: 'Dandruff Control & Purify Treatment',
-    price: '\$198 / 90mins',
-    imageAsset: 'assets/images/image_4.jpg',
-    summary: 'Relieves itchiness, inflammation, and dandruff',
-    points: <String>[
-      'Scalp detection',
-      'Essential oil relaxation',
-      'Scalp makeup remover oil',
-      'Scalp relaxation',
-      'Scalp deep cleansing',
-      'Scalp efficacy shampoo',
-      'Microcurrent ion follicle cleanser',
-      'Scalp hydrotherapy relaxation',
-      'Nourishing nano hair care',
-      'Scalp Negative Ion Oxygen Infusion Calming',
-      'Essence microcurrent ion infusion',
-      'Antibacterial Soothing Comb',
-      'Microcurrent Phototherapy Follicle Regeneration Device',
-      'Meridian Heat Therapy for Shoulder and Neck Relief',
-      'Dyson dryer blew dry the hair',
-    ],
-  ),
-  ServiceItem(
-    title: 'Anti-Hair Loss & Regrowth Treatment',
-    price: '\$198 / 90mins',
-    imageAsset: 'assets/images/image_5.jpg',
-    summary: 'Scalp healing and anti-aging program',
-    points: <String>[
-      'Scalp Analysis',
-      'Exfoliation - Oil Bath Cleansing',
-      'Scalp Essential Oil Relaxation',
-      'Customized Deep Cleansing - Healing Shampoo',
-      'Microcurrent Ion Follicle Care',
-      'Spa Relaxation - Nano Hair Care',
-      'Negative Ion Oxygen Infusion',
-      'Microcurrent Ion Introduction',
-      'High-Frequency Comb Antimicrobial Hair Care',
-      'Microcurrent Phototherapy Regenerator',
-      'Smart Anti-Aging Nutrient Infusion Device',
-      'Scalp Low-Level Laser Therapy Regeneration',
-      'Dyson dryer blew dry the hair',
-    ],
-  ),
-  ServiceItem(
-    title: 'Sensitive Scalp Soothing & Healing Treatment',
-    price: '\$198 / 90mins',
-    imageAsset: 'assets/images/image_5.jpg',
-    summary: 'For sensitive, irritated, or damaged scalps',
-    points: <String>[
-      'Scalp detection & sensitivity assessment',
-      'Essential oil relaxation',
-      'Scalp makeup remover oil',
-      'Scalp relaxation massage',
-      'Gentle deep cleansing',
-      'Hypoallergenic efficacy shampoo',
-      'Microcurrent ion follicle cleanser',
-      'Scalp hydrotherapy relaxation',
-      'Nourishing nano hair care',
-      'Soothing repairing epithelial-regenerating scalp mask',
-      'Scalp Negative Ion Oxygen Infusion Calming',
-      'Antibacterial soothing comb',
-      'Microcurrent phototherapy for follicle regeneration',
-      'Meridian heat therapy for shoulder & neck relief',
-      'Dyson dryer blow-dry',
-    ],
-  ),
-  ServiceItem(
-    title: 'ALGOMASK+ Customized Clinical Facial',
-    price: '\$169 / 60mins',
-    imageAsset: 'assets/images/image_8.jpg',
-    summary: 'Instant radiance and long-lasting hydration',
-    points: <String>[
-      'Moisturizes and tones the skin, reducing visible redness',
-      'Provides instant radiance',
-      'Maintains hydration levels',
-      'Hydrates, soothes, and revitalizes',
-      'Recommended Frequency: 3-6 weekly intensive, then every 4 weeks',
-    ],
-  ),
-  ServiceItem(
-    title: 'Oxygenating Professional Treatment',
-    price: '\$199 / 70mins',
-    imageAsset: 'assets/images/image_9.jpg',
-    summary: '5-step oxygen complex treatment',
-    points: <String>[
-      'Minimizes breakouts and calms redness',
-      'Provides mattifying effect for balanced skin',
-      'Restores luminosity and youthful glow',
-      'Color-free, paraben-free, alcohol-free, fragrance-free',
-      'Recommended Frequency: every 4 weeks',
-    ],
-  ),
-  ServiceItem(
-    title: 'HYDROLIFTING Professional Treatment',
-    price: '\$199 / 70mins',
-    imageAsset: 'assets/images/image_10.jpg',
-    summary: 'Uplifting anti-sagging treatment',
-    points: <String>[
-      'Improves visible toning of face and neck',
-      'Provides deep hydration',
-      'Enhances radiance with age-defying results',
-      'Recommended Frequency: every 3 weeks',
-    ],
-  ),
-  ServiceItem(
-    title: 'Collagen-90 Clinical Treatment',
-    price: '\$229 / 80mins',
-    imageAsset: 'assets/images/image_11.jpg',
-    summary: 'Prestigious rejuvenating collagen treatment',
-    points: <String>[
-      'Minimizes fine lines and wrinkles',
-      'Rejuvenates and tightens for youthful skin',
-      'Deep hydration for plump radiant complexion',
-      'Recommended Frequency: every 4 weeks',
-    ],
-  ),
-  ServiceItem(
-    title: 'Hand Mask',
-    price: '\$20 Add-On',
-    imageAsset: 'assets/images/image_13.jpg',
-    summary: 'Add-on hand care',
-    points: <String>[
-      'Deep hydration for dry tired hands',
-      'Leaves skin silky-soft and rejuvenated',
-    ],
-  ),
-  ServiceItem(
-    title: 'Foot Mask',
-    price: '\$20 Add-On',
-    imageAsset: 'assets/images/image_14.jpg',
-    summary: 'Add-on foot care',
-    points: <String>[
-      'Deep hydration',
-      'Heel crack repair',
-      'Soothing and callus softening',
-    ],
-  ),
-  ServiceItem(
-    title: 'Foot Soak Therapy',
-    price: '\$30 Add-On',
-    imageAsset: 'assets/images/image_12.jpg',
-    summary: 'Salt + Milk or Salt + Fruit soak',
-    points: <String>[
-      'Softens and smooths rough skin',
-      'Hydrates and brightens',
-      'Relieves fatigue and improves circulation',
-      'Antibacterial and deodorizing',
-      'Refreshing aromatherapy effect',
+  ServiceBlock(
+    badge: 'Duo Spa',
+    title: 'Duo Spa Experiences',
+    subtitle: 'Perfect for couples, friends & family',
+    items: <ServiceItem>[
+      ServiceItem(
+        title: 'Head Spa ×2',
+        price: 'Contact to book',
+        imageAsset: 'assets/images/intro.jpg',
+        summary: 'Two guests enjoy head spa together side by side.',
+        points: <String>[],
+      ),
+      ServiceItem(
+        title: 'Head Spa + Facial',
+        price: 'Contact to book',
+        imageAsset: 'assets/images/image_6.jpg',
+        summary: 'Full relaxation combined with skin rejuvenation.',
+        points: <String>[],
+      ),
+      ServiceItem(
+        title: 'Mix & Match',
+        price: 'Contact to book',
+        imageAsset: 'assets/images/image_3.jpg',
+        summary: 'Each guest chooses their own personalized service.',
+        points: <String>[],
+      ),
     ],
   ),
 ];
 
-class MenuPage extends StatelessWidget {
-  const MenuPage({super.key});
+/// Matches https://tranquilityhydrotherapy.com/services.html hero (Playfair + Inter, no duplicate tab title).
+class _ServicesIntroHero extends StatelessWidget {
+  const _ServicesIntroHero();
 
   @override
   Widget build(BuildContext context) {
-    return _PageBackground(
-      child: ListView(
-        padding: const EdgeInsets.all(16),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+      decoration: BoxDecoration(
+        color: kCharcoal.withOpacity(0.88),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          const _TopBanner(
-            title: 'Full Menu',
-            subtitle: 'All services from web are transferred here.',
+          Text(
+            'Where your ritual begins',
+            style: GoogleFonts.playfairDisplay(
+              color: Colors.white,
+              fontSize: 30,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.italic,
+              height: 1.12,
+            ),
           ),
-          ...kAllServices.map((ServiceItem s) => _ServiceCard(item: s)),
-          const _SectionCard(
-            title: 'Book Now',
-            body: kBookNowUrl,
+          const SizedBox(height: 14),
+          Text(
+            'At Tranquility Hydrotherapy, your experience begins long before the treatment starts. '
+            'Step into a space designed for stillness—soft light, calming aromas, and a quiet moment just for you.',
+            style: GoogleFonts.inter(
+              color: const Color(0xFFD6D3D1),
+              fontSize: 15,
+              fontWeight: FontWeight.w300,
+              height: 1.55,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Wrapped in comfort, you\'ll unwind with herbal tea, gentle warmth, and the feeling of finally slowing down. '
+            'This is more than a service. It\'s a ritual—one that restores balance, nourishes your scalp and skin, and brings you back to yourself.',
+            style: GoogleFonts.inter(
+              color: const Color(0xFFD6D3D1),
+              fontSize: 15,
+              fontWeight: FontWeight.w300,
+              height: 1.55,
+            ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ServicesPage extends StatelessWidget {
+  const ServicesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData base = Theme.of(context);
+    return Theme(
+      data: base.copyWith(
+        listTileTheme: ListTileThemeData(
+          titleTextStyle: GoogleFonts.playfairDisplay(
+            fontSize: 19,
+            fontWeight: FontWeight.w600,
+            color: kCharcoal,
+            height: 1.2,
+          ),
+          subtitleTextStyle: GoogleFonts.inter(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: kGold,
+            height: 1.2,
+          ),
+        ),
+      ),
+      child: _PageBackground(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: <Widget>[
+            const _ServicesIntroHero(),
+            ...kServiceCatalog.expand(
+              (ServiceBlock b) => <Widget>[
+                _ServiceBlockHeader(block: b),
+                ...b.items.map((ServiceItem s) => _ServiceCard(item: s)),
+              ],
+            ),
+            const _PremiumProductsPanel(),
+            const _BookNowLaunchCard(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ServiceBlockHeader extends StatelessWidget {
+  const _ServiceBlockHeader({required this.block});
+  final ServiceBlock block;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (block.badge != null) ...<Widget>[
+            Text(
+              block.badge!.toUpperCase(),
+              style: GoogleFonts.inter(
+                color: const Color(0xFF78716C),
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+                letterSpacing: 2.6,
+              ),
+            ),
+            const SizedBox(height: 6),
+          ],
+          Text(
+            block.title,
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 26,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.italic,
+              color: kCharcoal,
+              height: 1.15,
+            ),
+          ),
+          if (block.subtitle != null) ...<Widget>[
+            const SizedBox(height: 6),
+            Text(
+              block.subtitle!,
+              style: GoogleFonts.inter(
+                color: const Color(0xFF57534E),
+                fontSize: 15,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.italic,
+                height: 1.45,
+              ),
+            ),
+          ],
+          const SizedBox(height: 8),
+          const Divider(height: 1),
+        ],
+      ),
+    );
+  }
+}
+
+class _PremiumBrandTile extends StatelessWidget {
+  const _PremiumBrandTile({
+    required this.name,
+    required this.tagline,
+    required this.iconUrl,
+    required this.fallbackIcon,
+  });
+
+  final String name;
+  final String tagline;
+  final String iconUrl;
+  final IconData fallbackIcon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          width: 108,
+          height: 108,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.black.withOpacity(0.07),
+                blurRadius: 14,
+                offset: const Offset(0, 5),
+              ),
+            ],
+            border: Border.all(color: const Color(0xFFE8E2D9)),
+          ),
+          padding: const EdgeInsets.all(20),
+          child: ClipOval(
+            child: Image.network(
+              iconUrl,
+              fit: BoxFit.contain,
+              gaplessPlayback: true,
+              errorBuilder: (_, __, ___) => Icon(fallbackIcon, size: 46, color: kGold.withOpacity(0.9)),
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+        Text(
+          name,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 15,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 1.35,
+            color: kCharcoal,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          tagline,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.inter(
+            fontSize: 13,
+            fontWeight: FontWeight.w400,
+            color: const Color(0xFF6B6560),
+            height: 1.35,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PremiumProductsPanel extends StatelessWidget {
+  const _PremiumProductsPanel();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Premium products we use',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.italic,
+                color: kCharcoal,
+                height: 1.2,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'We use high-quality professional products to deliver the best results for your scalp and skin.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                height: 1.55,
+                fontWeight: FontWeight.w300,
+                color: const Color(0xFF57534E),
+              ),
+            ),
+            const SizedBox(height: 28),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints c) {
+                final bool narrow = c.maxWidth < 420;
+                const Widget row = Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _PremiumBrandTile(
+                      name: 'O WAY',
+                      tagline: 'Organic scalp care',
+                      iconUrl: kOwayBrandIconUrl,
+                      fallbackIcon: Icons.eco_outlined,
+                    ),
+                    SizedBox(width: 36),
+                    _PremiumBrandTile(
+                      name: 'GM Collin',
+                      tagline: 'Advanced skincare',
+                      iconUrl: kGmCollinBrandIconUrl,
+                      fallbackIcon: Icons.spa_outlined,
+                    ),
+                  ],
+                );
+                if (narrow) {
+                  return const Column(
+                    children: <Widget>[
+                      _PremiumBrandTile(
+                        name: 'O WAY',
+                        tagline: 'Organic scalp care',
+                        iconUrl: kOwayBrandIconUrl,
+                        fallbackIcon: Icons.eco_outlined,
+                      ),
+                      SizedBox(height: 28),
+                      _PremiumBrandTile(
+                        name: 'GM Collin',
+                        tagline: 'Advanced skincare',
+                        iconUrl: kGmCollinBrandIconUrl,
+                        fallbackIcon: Icons.spa_outlined,
+                      ),
+                    ],
+                  );
+                }
+                return row;
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _BookNowLaunchCard extends StatelessWidget {
+  const _BookNowLaunchCard({this.headline = 'Book now', this.subline = 'Reserve your visit online'});
+
+  final String headline;
+  final String subline;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          launchTranquilityBookingUrl().then((bool ok) {
+            if (!context.mounted || ok) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Could not open the booking page.')),
+            );
+          });
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
+          child: Row(
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: kGold.withOpacity(0.22),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const Icon(Icons.event_available_rounded, color: kCharcoal, size: 34),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      headline,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: kCharcoal,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      subline,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        height: 1.35,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF57534E),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.open_in_new_rounded, size: 16, color: kGold.withOpacity(0.95)),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Tap to open in browser',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: kGold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded, color: kGold.withOpacity(0.85), size: 28),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -919,9 +1652,9 @@ class GiftPage extends StatelessWidget {
             body:
                 'Surprise your loved ones with the gift of relaxation and healthy scalp care. Gift cards can be used toward all available services.',
           ),
-          _SectionCard(
-            title: 'Book / Redeem',
-            body: kBookNowUrl,
+          _BookNowLaunchCard(
+            headline: 'Book / Redeem',
+            subline: 'Use your gift card or book a service online',
           ),
         ],
       ),
@@ -945,7 +1678,7 @@ class ContactPage extends StatelessWidget {
           ),
           _SectionCard(title: 'Phone', body: '(630) 590-3188'),
           _SectionCard(title: 'Email', body: 'tranquilityhydrotherapy@gmail.com'),
-          _SectionCard(title: 'Open Hours', body: 'MON - SAT : 10AM - 7PM\nSUN : 10AM - 5PM'),
+          _SectionCard(title: 'Open Hours', body: 'MON - SUN : 10:00 AM - 8:00 PM'),
         ],
       ),
     );
@@ -962,6 +1695,7 @@ class _ServiceCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       clipBehavior: Clip.antiAlias,
       child: ExpansionTile(
+        initiallyExpanded: true,
         leading: const Icon(Icons.spa_rounded, color: kGold),
         title: Text(item.title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16)),
         subtitle: Text(item.price),
@@ -977,12 +1711,34 @@ class _ServiceCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Text(item.summary, style: const TextStyle(fontWeight: FontWeight.w700)),
-                const SizedBox(height: 8),
-                ...item.points.map((String p) => Padding(
-                      padding: const EdgeInsets.only(bottom: 4),
-                      child: Text('• $p'),
-                    )),
+                Text(
+                  item.summary,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        height: 1.48,
+                        color: const Color(0xFF2E2E2E),
+                      ),
+                ),
+                if (item.points.isNotEmpty) ...<Widget>[
+                  const SizedBox(height: 10),
+                  Text(
+                    item.highlightsLabel,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: kCharcoal,
+                          letterSpacing: 0.2,
+                        ),
+                  ),
+                  const SizedBox(height: 6),
+                  ...item.points.map((String p) => Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Text(
+                          '• $p',
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.45),
+                        ),
+                      )),
+                ],
               ],
             ),
           ),
@@ -993,9 +1749,14 @@ class _ServiceCard extends StatelessWidget {
 }
 
 class _PageBackground extends StatelessWidget {
-  const _PageBackground({required this.child, this.imageAsset});
+  const _PageBackground({
+    required this.child,
+    this.imageAsset,
+    this.overlayOpacity = 1.0,
+  });
   final Widget child;
   final String? imageAsset;
+  final double overlayOpacity;
 
   @override
   Widget build(BuildContext context) {
@@ -1009,13 +1770,13 @@ class _PageBackground extends StatelessWidget {
               ),
       ),
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: <Color>[
-              Color.fromRGBO(248, 245, 240, 0.78),
-              Color.fromRGBO(248, 245, 240, 0.94),
+              Color.fromRGBO(248, 245, 240, 0.78 * overlayOpacity),
+              Color.fromRGBO(248, 245, 240, 0.94 * overlayOpacity),
             ],
           ),
         ),
@@ -1039,9 +1800,25 @@ class _TopBanner extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 19)),
-          const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(color: Color(0xFFE6D7BF), height: 1.3)),
+          Text(
+            title,
+            style: GoogleFonts.playfairDisplay(
+              color: Colors.white,
+              fontWeight: FontWeight.w700,
+              fontSize: 22,
+              height: 1.15,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            subtitle,
+            style: GoogleFonts.inter(
+              color: const Color(0xFFD6D3D1),
+              fontSize: 15,
+              fontWeight: FontWeight.w300,
+              height: 1.45,
+            ),
+          ),
         ],
       ),
     );
@@ -1087,19 +1864,131 @@ class _BottomTabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color color = selected ? kGold : Colors.white70;
     return Expanded(
-      child: InkWell(
+      child: _AnimatedTabInner(
+        icon: icon,
+        label: label,
+        selected: selected,
         onTap: onTap,
+      ),
+    );
+  }
+}
+
+class _AnimatedTabInner extends StatefulWidget {
+  const _AnimatedTabInner({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  State<_AnimatedTabInner> createState() => _AnimatedTabInnerState();
+}
+
+class _AnimatedTabInnerState extends State<_AnimatedTabInner> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final Color color = widget.selected ? kGold : Colors.white70;
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapCancel: () => setState(() => _pressed = false),
+      onTapUp: (_) => setState(() => _pressed = false),
+      onTap: widget.onTap,
+      child: AnimatedScale(
+        duration: const Duration(milliseconds: 120),
+        scale: _pressed ? 0.92 : 1,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(icon, color: color, size: 22),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              transform: Matrix4.identity()..scale(widget.selected ? 1.08 : 1.0),
+              child: Icon(widget.icon, color: color, size: 22),
+            ),
             const SizedBox(height: 2),
-            Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600)),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutCubic,
+              style: TextStyle(
+                color: color,
+                fontSize: 11,
+                fontWeight: widget.selected ? FontWeight.w700 : FontWeight.w600,
+              ),
+              child: Text(widget.label),
+            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _AnimatedBookFab extends StatefulWidget {
+  const _AnimatedBookFab({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  State<_AnimatedBookFab> createState() => _AnimatedBookFabState();
+}
+
+class _AnimatedBookFabState extends State<_AnimatedBookFab> with SingleTickerProviderStateMixin {
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1700),
+  )..repeat(reverse: true);
+  bool _pressed = false;
+
+  @override
+  void dispose() {
+    _pulse.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _pulse,
+      builder: (_, __) {
+        final double pulseScale = 1 + (_pulse.value * 0.035);
+        return SizedBox(
+          width: 74,
+          height: 74,
+          child: GestureDetector(
+            onTapDown: (_) => setState(() => _pressed = true),
+            onTapCancel: () => setState(() => _pressed = false),
+            onTapUp: (_) => setState(() => _pressed = false),
+            child: AnimatedScale(
+              duration: const Duration(milliseconds: 110),
+              scale: _pressed ? 0.93 : pulseScale,
+              child: FloatingActionButton(
+                backgroundColor: kGold,
+                foregroundColor: kCharcoal,
+                shape: const CircleBorder(),
+                onPressed: widget.onTap,
+                child: const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(Icons.calendar_month_rounded, size: 22),
+                    SizedBox(height: 2),
+                    Text('Book', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
