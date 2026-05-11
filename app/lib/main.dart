@@ -274,6 +274,326 @@ class SecondaryScaffold extends StatelessWidget {
   }
 }
 
+class _HomeExperienceOffer {
+  const _HomeExperienceOffer({
+    required this.imageAsset,
+    required this.kicker,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String imageAsset;
+  final String kicker;
+  final String title;
+  final String subtitle;
+}
+
+const List<_HomeExperienceOffer> _kHomeExperiences = <_HomeExperienceOffer>[
+  _HomeExperienceOffer(
+    imageAsset: 'assets/images/about1.jpg',
+    kicker: 'Relax',
+    title: 'Relax & Unwind',
+    subtitle: 'Deep relaxation and stress relief — your reset in Oak Brook.',
+  ),
+  _HomeExperienceOffer(
+    imageAsset: 'assets/images/about2.jpg',
+    kicker: 'Glow',
+    title: 'Glow & Rejuvenate',
+    subtitle: 'Scalp and skin care for a visible, healthy-looking glow.',
+  ),
+  _HomeExperienceOffer(
+    imageAsset: 'assets/images/about4.jpg',
+    kicker: 'Restore',
+    title: 'Targeted Scalp Care',
+    subtitle: 'Address oil, dryness, and thinning with a plan tailored to you.',
+  ),
+];
+
+class _RevealStagger extends StatelessWidget {
+  const _RevealStagger({required this.animation, required this.child});
+
+  final Animation<double> animation;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animation,
+      builder: (BuildContext context, Widget? _) {
+        return Opacity(
+          opacity: animation.value.clamp(0.0, 1.0),
+          child: Transform.translate(
+            offset: Offset(0, (1 - animation.value) * 28),
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeImmersiveHero extends StatelessWidget {
+  const _HomeImmersiveHero({
+    required this.parallaxOffset,
+    required this.logoAnim,
+    required this.titleAnim,
+    required this.subAnim,
+    required this.badgeAnim,
+  });
+
+  final double parallaxOffset;
+  final Animation<double> logoAnim;
+  final Animation<double> titleAnim;
+  final Animation<double> subAnim;
+  final Animation<double> badgeAnim;
+
+  @override
+  Widget build(BuildContext context) {
+    final double h = MediaQuery.of(context).size.height;
+    final double heroHeight = math.max(560, h * 0.78);
+    final double parallax = (parallaxOffset * 0.35).clamp(0.0, 120.0);
+    return ClipRect(
+      child: SizedBox(
+        height: heroHeight,
+        width: double.infinity,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Transform.translate(
+              offset: Offset(0, -parallax),
+              child: Transform.scale(
+                scale: 1.08,
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/images/bg_4.jpg',
+                  fit: BoxFit.cover,
+                  height: heroHeight + 80,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                ),
+              ),
+            ),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.black.withOpacity(0.25),
+                    Colors.black.withOpacity(0.55),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 36, 22, 28),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _RevealStagger(
+                    animation: logoAnim,
+                    child: Transform.scale(
+                      scale: 0.92 + 0.08 * logoAnim.value,
+                      child: SizedBox(
+                        height: math.min(heroHeight * 0.38, 280),
+                        child: SvgPicture.asset(
+                          'assets/images/logo.svg',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  _RevealStagger(
+                    animation: titleAnim,
+                    child: Text(
+                      'Luxury head spa experience in Oak Brook',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFFFFFBF5),
+                        height: 1.12,
+                        shadows: const <Shadow>[
+                          Shadow(color: Color(0x66000000), blurRadius: 18, offset: Offset(0, 4)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  _RevealStagger(
+                    animation: subAnim,
+                    child: Text(
+                      'Relax. Reset. See real results.',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.inter(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0xFFE7E5E4),
+                        height: 1.4,
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _RevealStagger(
+                    animation: badgeAnim,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.35),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(color: Colors.white.withOpacity(0.2)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Icon(Icons.star_rounded, color: kGold.withOpacity(0.95), size: 20),
+                          const SizedBox(width: 8),
+                          Text(
+                            '4.9 rated · Loved by 1,000+ clients',
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFFFFBF5),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _EditorialPhotoBand extends StatelessWidget {
+  const _EditorialPhotoBand({required this.asset, required this.caption, required this.animation});
+
+  final String asset;
+  final String caption;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return _RevealStagger(
+      animation: animation,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: <Widget>[
+            Image.asset(
+              asset,
+              height: 260,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.72),
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 48, 18, 18),
+                  child: Text(
+                    caption,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      fontStyle: FontStyle.italic,
+                      color: const Color(0xFFFFFBF5),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeExperienceCard extends StatelessWidget {
+  const _HomeExperienceCard({required this.offer, required this.animation});
+
+  final _HomeExperienceOffer offer;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return _RevealStagger(
+      animation: animation,
+      child: Card(
+        margin: EdgeInsets.zero,
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Image.asset(
+              offer.imageAsset,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    offer.kicker.toUpperCase(),
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 1.4,
+                      color: kGold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    offer.title,
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w700,
+                      color: kCharcoal,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    offer.subtitle,
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      height: 1.5,
+                      color: const Color(0xFF57534E),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -281,39 +601,166 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  bool _show = false;
+class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
+  late final ScrollController _scroll;
+  late final AnimationController _entrance;
+
+  Animation<double> _seg(double start, double end) {
+    return CurvedAnimation(
+      parent: _entrance,
+      curve: Interval(start, end, curve: Curves.easeOutCubic),
+    );
+  }
+
+  void _onScroll() {
+    if (mounted) setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
+    _scroll = ScrollController()..addListener(_onScroll);
+    _entrance = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2000),
+    );
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) setState(() => _show = true);
+      if (mounted) _entrance.forward();
     });
   }
 
   @override
+  void dispose() {
+    _scroll.removeListener(_onScroll);
+    _scroll.dispose();
+    _entrance.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final double px = _scroll.hasClients ? _scroll.offset : 0.0;
+    final Animation<double> heroLogo = _seg(0.0, 0.28);
+    final Animation<double> heroTitle = _seg(0.1, 0.38);
+    final Animation<double> heroSub = _seg(0.18, 0.46);
+    final Animation<double> heroBadge = _seg(0.26, 0.52);
+    final Animation<double> wideA = _seg(0.4, 0.58);
+    final Animation<double> exp0 = _seg(0.48, 0.66);
+    final Animation<double> exp1 = _seg(0.54, 0.72);
+    final Animation<double> exp2 = _seg(0.6, 0.78);
+    final Animation<double> wideB = _seg(0.68, 0.84);
+    final Animation<double> storiesH = _seg(0.74, 0.88);
+    final Animation<double> storiesBlock = _seg(0.78, 0.95);
+    final Animation<double> ctaAnim = _seg(0.82, 1.0);
+
     return _PageBackground(
-      imageAsset: 'assets/images/bg_4.jpg',
-      overlayOpacity: 0.0,
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 1500),
-        curve: Curves.easeInOutCubic,
-        opacity: _show ? 1 : 0,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            const _HomeHero(),
-            const SizedBox(height: 16),
-            ..._kAboutStories.map(
-              (_AboutStory story) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: _AboutFlipCard(story: story),
-              ),
+      child: ListView(
+        controller: _scroll,
+        padding: EdgeInsets.zero,
+        children: <Widget>[
+          _HomeImmersiveHero(
+            parallaxOffset: px,
+            logoAnim: heroLogo,
+            titleAnim: heroTitle,
+            subAnim: heroSub,
+            badgeAnim: heroBadge,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                _EditorialPhotoBand(
+                  asset: 'assets/images/bg_2.jpg',
+                  caption: 'Where luxury meets scalp health',
+                  animation: wideA,
+                ),
+                const SizedBox(height: 28),
+                _RevealStagger(
+                  animation: _seg(0.44, 0.62),
+                  child: Text(
+                    'Choose your experience',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: kCharcoal,
+                      height: 1.1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _RevealStagger(
+                  animation: _seg(0.46, 0.64),
+                  child: Text(
+                    'Not sure where to start? Pick the path that fits you today.',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      height: 1.45,
+                      color: const Color(0xFF78716C),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _HomeExperienceCard(offer: _kHomeExperiences[0], animation: exp0),
+                const SizedBox(height: 14),
+                _HomeExperienceCard(offer: _kHomeExperiences[1], animation: exp1),
+                const SizedBox(height: 14),
+                _HomeExperienceCard(offer: _kHomeExperiences[2], animation: exp2),
+                const SizedBox(height: 28),
+                _EditorialPhotoBand(
+                  asset: 'assets/images/intro.jpg',
+                  caption: 'Tranquility atmosphere',
+                  animation: wideB,
+                ),
+                const SizedBox(height: 28),
+                _RevealStagger(
+                  animation: storiesH,
+                  child: Text(
+                    'Why scalp care matters',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w700,
+                      color: kCharcoal,
+                      height: 1.1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                _RevealStagger(
+                  animation: _seg(0.76, 0.9),
+                  child: Text(
+                    'Tap a card to read more — flip for the full story.',
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      height: 1.45,
+                      color: const Color(0xFF78716C),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                _RevealStagger(
+                  animation: storiesBlock,
+                  child: Column(
+                    children: _kAboutStories
+                        .map(
+                          (_AboutStory story) => Padding(
+                            padding: const EdgeInsets.only(bottom: 14),
+                            child: _AboutFlipCard(story: story),
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                _RevealStagger(
+                  animation: ctaAnim,
+                  child: const _BookRitualCard(),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -687,62 +1134,6 @@ class _SocialIconButton extends StatelessWidget {
   }
 }
 
-class _HomeHero extends StatelessWidget {
-  const _HomeHero();
-
-  @override
-  Widget build(BuildContext context) {
-    final double heroHeight = math.max(520, MediaQuery.of(context).size.height * 0.86);
-    final double logoHeight = math.max(320, MediaQuery.of(context).size.height * 0.58);
-    return SizedBox(
-      width: double.infinity,
-      height: heroHeight,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: <Color>[
-              Colors.white.withOpacity(0.16),
-              Colors.black.withOpacity(0.36),
-            ],
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: logoHeight,
-                child: Transform.scale(
-                  scale: 2.2,
-                  child: SvgPicture.asset(
-                    'assets/images/logo.svg',
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              Text(
-                'Welcome to Tranquility Hydrotherapy – Where Luxury Meets Scalp Health',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.cormorantGaramond(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.black,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class _AboutStory {
   const _AboutStory({
     required this.image,
@@ -1035,8 +1426,8 @@ class _AboutAtmosphereSection extends StatelessWidget {
   }
 }
 
-class _AboutRitualCtaSection extends StatelessWidget {
-  const _AboutRitualCtaSection();
+class _BookRitualCard extends StatelessWidget {
+  const _BookRitualCard();
 
   @override
   Widget build(BuildContext context) {
@@ -1240,7 +1631,7 @@ class AboutPage extends StatelessWidget {
           _AboutHeroSection(),
           _AboutPillarsSection(),
           _AboutAtmosphereSection(),
-          _AboutRitualCtaSection(),
+          _BookRitualCard(),
           _AboutVisitSection(),
           _AboutQuickLinksCard(),
           _AboutFollowUsSection(),
@@ -1707,66 +2098,308 @@ const List<ServiceBlock> kServiceCatalog = <ServiceBlock>[
   ),
 ];
 
-/// Matches https://tranquilityhydrotherapy.com/services.html hero (Playfair + Inter, no duplicate tab title).
-class _ServicesIntroHero extends StatelessWidget {
-  const _ServicesIntroHero();
+/// Full-bleed hero for Services — aligned with https://tranquilityhydrotherapy.com/services.html tone.
+class _ServicesImmersiveHero extends StatelessWidget {
+  const _ServicesImmersiveHero({
+    required this.parallaxOffset,
+    required this.titleAnim,
+    required this.subAnim,
+    required this.chipAnim,
+  });
+
+  final double parallaxOffset;
+  final Animation<double> titleAnim;
+  final Animation<double> subAnim;
+  final Animation<double> chipAnim;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
-      decoration: BoxDecoration(
-        color: kCharcoal.withOpacity(0.88),
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            'Where your ritual begins',
-            style: GoogleFonts.playfairDisplay(
-              color: Colors.white,
-              fontSize: 30,
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.italic,
-              height: 1.12,
+    final double h = MediaQuery.of(context).size.height;
+    final double heroHeight = math.max(480, h * 0.62);
+    final double parallax = (parallaxOffset * 0.32).clamp(0.0, 100.0);
+    return ClipRect(
+      child: SizedBox(
+        height: heroHeight,
+        width: double.infinity,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Transform.translate(
+              offset: Offset(0, -parallax),
+              child: Transform.scale(
+                scale: 1.07,
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/images/image_3.jpg',
+                  fit: BoxFit.cover,
+                  height: heroHeight + 72,
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
-          Text(
-            'At Tranquility Hydrotherapy, your experience begins long before the treatment starts. '
-            'Step into a space designed for stillness—soft light, calming aromas, and a quiet moment just for you.',
-            style: GoogleFonts.inter(
-              color: const Color(0xFFD6D3D1),
-              fontSize: 15,
-              fontWeight: FontWeight.w300,
-              height: 1.55,
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.black.withOpacity(0.2),
+                    Colors.black.withOpacity(0.62),
+                  ],
+                ),
+              ),
             ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Wrapped in comfort, you\'ll unwind with herbal tea, gentle warmth, and the feeling of finally slowing down. '
-            'This is more than a service. It\'s a ritual—one that restores balance, nourishes your scalp and skin, and brings you back to yourself.',
-            style: GoogleFonts.inter(
-              color: const Color(0xFFD6D3D1),
-              fontSize: 15,
-              fontWeight: FontWeight.w300,
-              height: 1.55,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 48, 22, 32),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _RevealStagger(
+                    animation: titleAnim,
+                    child: Text(
+                      'Where your ritual begins',
+                      style: GoogleFonts.playfairDisplay(
+                        color: Colors.white,
+                        fontSize: 34,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.italic,
+                        height: 1.08,
+                        shadows: const <Shadow>[
+                          Shadow(color: Color(0x66000000), blurRadius: 16, offset: Offset(0, 3)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  _RevealStagger(
+                    animation: subAnim,
+                    child: Text(
+                      'Signature head spa, clinical facials, and targeted scalp therapies — each session tailored to you.',
+                      style: GoogleFonts.inter(
+                        color: const Color(0xFFE7E5E4),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                        height: 1.45,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  _RevealStagger(
+                    animation: chipAnim,
+                    child: const Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: <Widget>[
+                        _ServicesHeroChip(label: 'Head spa'),
+                        _ServicesHeroChip(label: 'Facials'),
+                        _ServicesHeroChip(label: 'Scalp therapy'),
+                        _ServicesHeroChip(label: 'Duo spa'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
-class ServicesPage extends StatelessWidget {
+class _ServicesHeroChip extends StatelessWidget {
+  const _ServicesHeroChip({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.38),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withOpacity(0.22)),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.inter(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFFFFFBF5),
+          letterSpacing: 0.2,
+        ),
+      ),
+    );
+  }
+}
+
+class _ServiceCategoryBanner extends StatelessWidget {
+  const _ServiceCategoryBanner({
+    required this.block,
+    required this.animation,
+  });
+
+  final ServiceBlock block;
+  final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    final ServiceItem lead = block.items.first;
+    return _RevealStagger(
+      animation: animation,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: Stack(
+          alignment: Alignment.bottomLeft,
+          children: <Widget>[
+            Image.asset(
+              lead.imageAsset,
+              height: 168,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: <Color>[
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.75),
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 40, 18, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      if (block.badge != null)
+                        Text(
+                          block.badge!.toUpperCase(),
+                          style: GoogleFonts.inter(
+                            color: kGold,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                            letterSpacing: 2.2,
+                          ),
+                        ),
+                      if (block.badge != null) const SizedBox(height: 6),
+                      Text(
+                        block.title,
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.italic,
+                          color: const Color(0xFFFFFBF5),
+                          height: 1.12,
+                        ),
+                      ),
+                      if (block.subtitle != null) ...<Widget>[
+                        const SizedBox(height: 6),
+                        Text(
+                          block.subtitle!,
+                          style: GoogleFonts.inter(
+                            color: const Color(0xFFE7E5E4),
+                            fontSize: 14,
+                            fontStyle: FontStyle.italic,
+                            height: 1.35,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ServicesPage extends StatefulWidget {
   const ServicesPage({super.key});
+
+  @override
+  State<ServicesPage> createState() => _ServicesPageState();
+}
+
+class _ServicesPageState extends State<ServicesPage> with SingleTickerProviderStateMixin {
+  late final ScrollController _scroll;
+  late final AnimationController _entrance;
+
+  Animation<double> _seg(double start, double end) {
+    return CurvedAnimation(
+      parent: _entrance,
+      curve: Interval(start, end, curve: Curves.easeOutCubic),
+    );
+  }
+
+  void _onScroll() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll = ScrollController()..addListener(_onScroll);
+    _entrance = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _entrance.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scroll.removeListener(_onScroll);
+    _scroll.dispose();
+    _entrance.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData base = Theme.of(context);
+    final double px = _scroll.hasClients ? _scroll.offset : 0.0;
+
+    int step = 0;
+    Animation<double> nextAnim() {
+      final double start = (0.035 + step * 0.024).clamp(0.0, 0.9);
+      step++;
+      double end = start + 0.038;
+      if (end > 0.98) end = 0.98;
+      if (end <= start) end = start + 0.02;
+      return _seg(start, end);
+    }
+
+    final Animation<double> introAnim = nextAnim();
+    final Animation<double> editorialAnim = nextAnim();
+    final Animation<double> menuTitleAnim = nextAnim();
+    final Animation<double> menuSubAnim = nextAnim();
+
+    final List<Widget> catalogWidgets = <Widget>[];
+    for (final ServiceBlock block in kServiceCatalog) {
+      catalogWidgets.add(_ServiceCategoryBanner(block: block, animation: nextAnim()));
+      catalogWidgets.add(const SizedBox(height: 12));
+      for (final ServiceItem item in block.items) {
+        catalogWidgets.add(_ServiceCard(item: item, entranceAnim: nextAnim()));
+      }
+    }
+
+    final Animation<double> premiumAnim = nextAnim();
+    final Animation<double> bookAnim = nextAnim();
+
     return Theme(
       data: base.copyWith(
         listTileTheme: ListTileThemeData(
@@ -1786,73 +2419,130 @@ class ServicesPage extends StatelessWidget {
       ),
       child: _PageBackground(
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          controller: _scroll,
+          padding: EdgeInsets.zero,
           children: <Widget>[
-            const _ServicesIntroHero(),
-            ...kServiceCatalog.expand(
-              (ServiceBlock b) => <Widget>[
-                _ServiceBlockHeader(block: b),
-                ...b.items.map((ServiceItem s) => _ServiceCard(item: s)),
-              ],
+            _ServicesImmersiveHero(
+              parallaxOffset: px,
+              titleAnim: _seg(0.0, 0.22),
+              subAnim: _seg(0.08, 0.28),
+              chipAnim: _seg(0.14, 0.34),
             ),
-            const _PremiumProductsPanel(),
-            const _BookNowLaunchCard(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 26, 16, 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _RevealStagger(
+                    animation: introAnim,
+                    child: Card(
+                      margin: EdgeInsets.zero,
+                      clipBehavior: Clip.antiAlias,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Before your treatment',
+                              style: GoogleFonts.playfairDisplay(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                color: kCharcoal,
+                                height: 1.1,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'At Tranquility Hydrotherapy, your experience begins long before the treatment starts. '
+                              'Step into a space designed for stillness—soft light, calming aromas, and a quiet moment just for you.',
+                              style: GoogleFonts.inter(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                height: 1.55,
+                                color: const Color(0xFF57534E),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              'Wrapped in comfort, you\'ll unwind with herbal tea, gentle warmth, and the feeling of finally slowing down. '
+                              'This is more than a service. It\'s a ritual—one that restores balance, nourishes your scalp and skin, and brings you back to yourself.',
+                              style: GoogleFonts.inter(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                height: 1.55,
+                                color: const Color(0xFF57534E),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 22),
+                  _EditorialPhotoBand(
+                    asset: 'assets/images/image_12.jpg',
+                    caption: 'Treatments crafted for visible results',
+                    animation: editorialAnim,
+                  ),
+                  const SizedBox(height: 8),
+                  _RevealStagger(
+                    animation: menuTitleAnim,
+                    child: Text(
+                      'Our menu',
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: kCharcoal,
+                        height: 1.1,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  _RevealStagger(
+                    animation: menuSubAnim,
+                    child: Text(
+                      'Explore each category — tap a service to see details.',
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        height: 1.45,
+                        color: const Color(0xFF78716C),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 18),
+                  ...catalogWidgets,
+                  const SizedBox(height: 8),
+                  _RevealStagger(
+                    animation: premiumAnim,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.asset(
+                            'assets/images/image_8.jpg',
+                            height: 140,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        const _PremiumProductsPanel(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  _RevealStagger(
+                    animation: bookAnim,
+                    child: const _BookNowLaunchCard(),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
+            ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ServiceBlockHeader extends StatelessWidget {
-  const _ServiceBlockHeader({required this.block});
-  final ServiceBlock block;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8, bottom: 6),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          if (block.badge != null) ...<Widget>[
-            Text(
-              block.badge!.toUpperCase(),
-              style: GoogleFonts.inter(
-                color: const Color(0xFF78716C),
-                fontWeight: FontWeight.w600,
-                fontSize: 11,
-                letterSpacing: 2.6,
-              ),
-            ),
-            const SizedBox(height: 6),
-          ],
-          Text(
-            block.title,
-            style: GoogleFonts.playfairDisplay(
-              fontSize: 26,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.italic,
-              color: kCharcoal,
-              height: 1.15,
-            ),
-          ),
-          if (block.subtitle != null) ...<Widget>[
-            const SizedBox(height: 6),
-            Text(
-              block.subtitle!,
-              style: GoogleFonts.inter(
-                color: const Color(0xFF57534E),
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.italic,
-                height: 1.45,
-              ),
-            ),
-          ],
-          const SizedBox(height: 8),
-          const Divider(height: 1),
-        ],
       ),
     );
   }
@@ -1877,31 +2567,31 @@ class _PremiumBrandTile extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Container(
-          width: 108,
-          height: 108,
+          width: 72,
+          height: 72,
           decoration: BoxDecoration(
             color: Colors.white,
             shape: BoxShape.circle,
             boxShadow: <BoxShadow>[
               BoxShadow(
                 color: Colors.black.withOpacity(0.07),
-                blurRadius: 14,
-                offset: const Offset(0, 5),
+                blurRadius: 10,
+                offset: const Offset(0, 3),
               ),
             ],
             border: Border.all(color: const Color(0xFFE8E2D9)),
           ),
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(13),
           child: ClipOval(
             child: Image.network(
               iconUrl,
               fit: BoxFit.contain,
               gaplessPlayback: true,
-              errorBuilder: (_, __, ___) => Icon(fallbackIcon, size: 46, color: kGold.withOpacity(0.9)),
+              errorBuilder: (_, __, ___) => Icon(fallbackIcon, size: 30, color: kGold.withOpacity(0.9)),
             ),
           ),
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 10),
         Text(
           name,
           textAlign: TextAlign.center,
@@ -2839,63 +3529,85 @@ class FaqPage extends StatelessWidget {
 }
 
 class _ServiceCard extends StatelessWidget {
-  const _ServiceCard({required this.item});
+  const _ServiceCard({required this.item, required this.entranceAnim});
   final ServiceItem item;
+  final Animation<double> entranceAnim;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      clipBehavior: Clip.antiAlias,
-      child: ExpansionTile(
-        initiallyExpanded: true,
-        leading: const Icon(Icons.spa_rounded, color: kGold),
-        title: Text(item.title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16)),
-        subtitle: Text(item.price),
-        trailing: const Icon(Icons.expand_more),
-        children: <Widget>[
-          SizedBox(
-            width: double.infinity,
-            height: 150,
-            child: Image.asset(item.imageAsset, fit: BoxFit.cover),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  item.summary,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        height: 1.48,
-                        color: const Color(0xFF2E2E2E),
-                      ),
-                ),
-                if (item.points.isNotEmpty) ...<Widget>[
-                  const SizedBox(height: 10),
-                  Text(
-                    item.highlightsLabel,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: kCharcoal,
-                          letterSpacing: 0.2,
-                        ),
-                  ),
-                  const SizedBox(height: 6),
-                  ...item.points.map((String p) => Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Text(
-                          '• $p',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.45),
-                        ),
-                      )),
-                ],
-              ],
+    return _RevealStagger(
+      animation: entranceAnim,
+      child: Card(
+        margin: const EdgeInsets.only(bottom: 14),
+        clipBehavior: Clip.antiAlias,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Image.asset(
+              item.imageAsset,
+              height: 220,
+              fit: BoxFit.cover,
             ),
-          ),
-        ],
+            Theme(
+              data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                initiallyExpanded: false,
+                tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                leading: Icon(Icons.spa_rounded, color: kGold.withOpacity(0.95)),
+                title: Text(
+                  item.title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 17),
+                ),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(item.price),
+                ),
+                trailing: Icon(
+                  Icons.expand_more_rounded,
+                  color: kCharcoal.withOpacity(0.55),
+                ),
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          item.summary,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                height: 1.48,
+                                color: const Color(0xFF2E2E2E),
+                              ),
+                        ),
+                        if (item.points.isNotEmpty) ...<Widget>[
+                          const SizedBox(height: 12),
+                          Text(
+                            item.highlightsLabel,
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w700,
+                                  color: kCharcoal,
+                                  letterSpacing: 0.2,
+                                ),
+                          ),
+                          const SizedBox(height: 8),
+                          ...item.points.map((String p) => Padding(
+                                padding: const EdgeInsets.only(bottom: 6),
+                                child: Text(
+                                  '• $p',
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(height: 1.45),
+                                ),
+                              )),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
