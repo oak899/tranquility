@@ -63,6 +63,7 @@ class TranquilityApp extends StatelessWidget {
     final TextTheme inter = GoogleFonts.interTextTheme(seed.textTheme);
     return MaterialApp(
       title: 'Tranquility Hydrotherapy',
+      debugShowCheckedModeBanner: false,
       theme: seed.copyWith(
         scaffoldBackgroundColor: kCream,
         appBarTheme: const AppBarTheme(
@@ -122,7 +123,7 @@ class TranquilityApp extends StatelessWidget {
             color: const Color(0xFF78716C),
           ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: Colors.white.withOpacity(0.93),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           elevation: 2,
@@ -356,9 +357,20 @@ class _HomeImmersiveHero extends StatelessWidget {
   Widget build(BuildContext context) {
     final MediaQueryData mq = MediaQuery.of(context);
     final double topInset = mq.viewPadding.top;
-    final double heroHeight = math.max(320, viewportHeight);
-    final double parallax = (parallaxOffset * 0.35).clamp(0.0, 120.0);
-    final double logoMaxH = math.min(math.max(heroHeight - topInset - 200, 120), 260);
+    final double w = mq.size.width;
+    // Slightly shorter than full viewport so the next section peeks — feels less “boxed in”.
+    final double heroHeight = math.min(
+      math.max(viewportHeight * 0.9, 396),
+      viewportHeight,
+    );
+    final double parallax = (parallaxOffset * 0.32).clamp(0.0, 96.0);
+    // Logo scales with hero height but stays readable on small phones / large phablets.
+    final double logoMaxH = math.min(math.max(heroHeight * 0.24, 108.0), 216.0);
+    final double titleSize = w < 360 ? 26.0 : (w < 420 ? 28.0 : 30.0);
+    const Color kHeroWashTop = Color(0xFFFFF7EF);
+    const Color kHeroMist = Color(0xFF6B8F85);
+    const Color kHeroDeep = Color(0xFF1C2C28);
+
     return ClipRect(
       child: SizedBox(
         height: heroHeight,
@@ -369,38 +381,50 @@ class _HomeImmersiveHero extends StatelessWidget {
             Transform.translate(
               offset: Offset(0, -parallax),
               child: Transform.scale(
-                scale: 1.08,
+                scale: 1.05,
                 alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/images/bg_4.jpg',
-                  fit: BoxFit.cover,
-                  height: heroHeight + 100,
-                  width: double.infinity,
-                  alignment: Alignment.center,
+                child: ColorFiltered(
+                  colorFilter: const ColorFilter.matrix(<double>[
+                    1.04, 0, 0, 0, 14,
+                    0, 1.03, 0, 0, 10,
+                    0, 0, 1.02, 0, 8,
+                    0, 0, 0, 1, 0,
+                  ]),
+                  child: Image.asset(
+                    'assets/images/bg_4.jpg',
+                    fit: BoxFit.cover,
+                    height: heroHeight + 80,
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                  ),
                 ),
               ),
             ),
+            // Warm rice-paper → airy sage → controlled depth (aligned with brand splash tones).
             DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
+                  stops: const <double>[0.0, 0.28, 0.62, 1.0],
                   colors: <Color>[
-                    Colors.black.withOpacity(0.25),
-                    Colors.black.withOpacity(0.55),
+                    kHeroWashTop.withOpacity(0.42),
+                    kHeroWashTop.withOpacity(0.12),
+                    kHeroMist.withOpacity(0.22),
+                    kHeroDeep.withOpacity(0.5),
                   ],
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.fromLTRB(22, topInset + 12, 22, 20),
+              padding: EdgeInsets.fromLTRB(24, topInset + 16, 24, 28),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   _RevealStagger(
                     animation: logoAnim,
                     child: Transform.scale(
-                      scale: 0.92 + 0.08 * logoAnim.value,
+                      scale: 0.94 + 0.06 * logoAnim.value,
                       child: SizedBox(
                         height: logoMaxH,
                         child: SvgPicture.asset(
@@ -410,72 +434,88 @@ class _HomeImmersiveHero extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 22),
-                  _RevealStagger(
-                    animation: titleAnim,
-                    child: Text(
-                      'Luxury head spa experience in Oak Brook',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.playfairDisplay(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFFFFFBF5),
-                        height: 1.12,
-                        shadows: const <Shadow>[
-                          Shadow(color: Color(0x66000000), blurRadius: 18, offset: Offset(0, 4)),
-                        ],
-                      ),
+                  SizedBox(height: math.min(26, heroHeight * 0.045)),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFDFBF8).withOpacity(0.94),
+                      borderRadius: BorderRadius.circular(22),
+                      border: Border.all(color: const Color(0xFFE8E2DA)),
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 24,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  _RevealStagger(
-                    animation: subAnim,
-                    child: Text(
-                      'Relax. Reset. See real results.',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xFFE7E5E4),
-                        height: 1.4,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _RevealStagger(
-                    animation: badgeAnim,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.center,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.35),
-                              borderRadius: BorderRadius.circular(999),
-                              border: Border.all(color: Colors.white.withOpacity(0.2)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(Icons.star_rounded, color: kGold.withOpacity(0.95), size: 20),
-                                const SizedBox(width: 8),
-                                Text(
-                                  '4.9 rated · Loved by 1,000+ clients',
-                                  style: GoogleFonts.inter(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFFFFFBF5),
-                                  ),
-                                ),
-                              ],
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          _RevealStagger(
+                            animation: titleAnim,
+                            child: Text(
+                              'Luxury head spa experience in Oak Brook',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.playfairDisplay(
+                                fontSize: titleSize,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1F1B18),
+                                height: 1.14,
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(height: 12),
+                          _RevealStagger(
+                            animation: subAnim,
+                            child: Text(
+                              'Relax. Reset. See real results.',
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: const Color(0xFF57534E),
+                                height: 1.45,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: math.min(18, heroHeight * 0.032)),
+                          _RevealStagger(
+                            animation: badgeAnim,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.center,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFE8E3DC),
+                                    borderRadius: BorderRadius.circular(999),
+                                    border: Border.all(color: const Color(0xFF78716C).withOpacity(0.35)),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Icon(Icons.star_rounded, color: kGold, size: 20),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        '4.9 rated · Loved by 1,000+ clients',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w700,
+                                          color: const Color(0xFF292524),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),

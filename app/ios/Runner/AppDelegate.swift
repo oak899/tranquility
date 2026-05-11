@@ -7,7 +7,8 @@ import UIKit
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GeneratedPluginRegistrant.register(with: self)
+    // Plugins are registered in `SceneDelegate` once `FlutterViewController` exists.
+    // With UIScene, `register(with: self)` here can crash (nil registrar / engine not ready).
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }

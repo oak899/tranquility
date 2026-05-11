@@ -13,6 +13,8 @@
 
          This Theme is only used starting with V2 of Flutter's Android embedding. -->
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowBackground">?android:colorBackground</item>
+        <!-- Avoid Material default colorBackground (often reads as mint/grey) between splash and Flutter paint. -->
+        <item name="android:windowBackground">@color/flutter_window_background</item>
+        <item name="android:colorBackground">@color/flutter_window_background</item>
     </style>
 </resources>
