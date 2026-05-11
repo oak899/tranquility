@@ -168,27 +168,29 @@ class _SiteShellState extends State<SiteShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 420),
-          switchInCurve: Curves.easeOutCubic,
-          switchOutCurve: Curves.easeInCubic,
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            final double dx = _index >= _lastIndex ? 0.08 : -0.08;
-            final Animation<Offset> offset = Tween<Offset>(
-              begin: Offset(dx, 0),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
-            return FadeTransition(
-              opacity: animation,
-              child: SlideTransition(position: offset, child: child),
-            );
-          },
-          child: KeyedSubtree(
-            key: ValueKey<int>(_index),
-            child: _body(),
-          ),
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 420),
+        switchInCurve: Curves.easeOutCubic,
+        switchOutCurve: Curves.easeInCubic,
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          final double dx = _index >= _lastIndex ? 0.08 : -0.08;
+          final Animation<Offset> offset = Tween<Offset>(
+            begin: Offset(dx, 0),
+            end: Offset.zero,
+          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(position: offset, child: child),
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey<int>(_index),
+          child: _index == 0
+              ? _body()
+              : SafeArea(
+                  bottom: false,
+                  child: _body(),
+                ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -334,6 +336,7 @@ class _RevealStagger extends StatelessWidget {
 
 class _HomeImmersiveHero extends StatelessWidget {
   const _HomeImmersiveHero({
+    required this.viewportHeight,
     required this.parallaxOffset,
     required this.logoAnim,
     required this.titleAnim,
@@ -341,6 +344,8 @@ class _HomeImmersiveHero extends StatelessWidget {
     required this.badgeAnim,
   });
 
+  /// Height of the visible body (fills first screen above bottom nav on phones).
+  final double viewportHeight;
   final double parallaxOffset;
   final Animation<double> logoAnim;
   final Animation<double> titleAnim;
@@ -349,9 +354,11 @@ class _HomeImmersiveHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double h = MediaQuery.of(context).size.height;
-    final double heroHeight = math.max(560, h * 0.78);
+    final MediaQueryData mq = MediaQuery.of(context);
+    final double topInset = mq.viewPadding.top;
+    final double heroHeight = math.max(320, viewportHeight);
     final double parallax = (parallaxOffset * 0.35).clamp(0.0, 120.0);
+    final double logoMaxH = math.min(math.max(heroHeight - topInset - 200, 120), 260);
     return ClipRect(
       child: SizedBox(
         height: heroHeight,
@@ -367,7 +374,7 @@ class _HomeImmersiveHero extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/bg_4.jpg',
                   fit: BoxFit.cover,
-                  height: heroHeight + 80,
+                  height: heroHeight + 100,
                   width: double.infinity,
                   alignment: Alignment.center,
                 ),
@@ -386,7 +393,7 @@ class _HomeImmersiveHero extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(22, 36, 22, 28),
+              padding: EdgeInsets.fromLTRB(22, topInset + 12, 22, 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -395,7 +402,7 @@ class _HomeImmersiveHero extends StatelessWidget {
                     child: Transform.scale(
                       scale: 0.92 + 0.08 * logoAnim.value,
                       child: SizedBox(
-                        height: math.min(heroHeight * 0.38, 280),
+                        height: logoMaxH,
                         child: SvgPicture.asset(
                           'assets/images/logo.svg',
                           fit: BoxFit.contain,
@@ -654,113 +661,121 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final Animation<double> ctaAnim = _seg(0.82, 1.0);
 
     return _PageBackground(
-      child: ListView(
-        controller: _scroll,
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          _HomeImmersiveHero(
-            parallaxOffset: px,
-            logoAnim: heroLogo,
-            titleAnim: heroTitle,
-            subAnim: heroSub,
-            badgeAnim: heroBadge,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                _EditorialPhotoBand(
-                  asset: 'assets/images/bg_2.jpg',
-                  caption: 'Where luxury meets scalp health',
-                  animation: wideA,
-                ),
-                const SizedBox(height: 28),
-                _RevealStagger(
-                  animation: _seg(0.44, 0.62),
-                  child: Text(
-                    'Choose your experience',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: kCharcoal,
-                      height: 1.1,
+      child: LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+          final double viewportH = constraints.maxHeight.isFinite
+              ? constraints.maxHeight
+              : MediaQuery.sizeOf(context).height;
+          return ListView(
+            controller: _scroll,
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              _HomeImmersiveHero(
+                viewportHeight: viewportH,
+                parallaxOffset: px,
+                logoAnim: heroLogo,
+                titleAnim: heroTitle,
+                subAnim: heroSub,
+                badgeAnim: heroBadge,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    _EditorialPhotoBand(
+                      asset: 'assets/images/bg_2.jpg',
+                      caption: 'Where luxury meets scalp health',
+                      animation: wideA,
                     ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                _RevealStagger(
-                  animation: _seg(0.46, 0.64),
-                  child: Text(
-                    'Not sure where to start? Pick the path that fits you today.',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      height: 1.45,
-                      color: const Color(0xFF78716C),
+                    const SizedBox(height: 28),
+                    _RevealStagger(
+                      animation: _seg(0.44, 0.62),
+                      child: Text(
+                        'Choose your experience',
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          color: kCharcoal,
+                          height: 1.1,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                _HomeExperienceCard(offer: _kHomeExperiences[0], animation: exp0),
-                const SizedBox(height: 14),
-                _HomeExperienceCard(offer: _kHomeExperiences[1], animation: exp1),
-                const SizedBox(height: 14),
-                _HomeExperienceCard(offer: _kHomeExperiences[2], animation: exp2),
-                const SizedBox(height: 28),
-                _EditorialPhotoBand(
-                  asset: 'assets/images/intro.jpg',
-                  caption: 'Tranquility atmosphere',
-                  animation: wideB,
-                ),
-                const SizedBox(height: 28),
-                _RevealStagger(
-                  animation: storiesH,
-                  child: Text(
-                    'Why scalp care matters',
-                    style: GoogleFonts.playfairDisplay(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                      color: kCharcoal,
-                      height: 1.1,
+                    const SizedBox(height: 6),
+                    _RevealStagger(
+                      animation: _seg(0.46, 0.64),
+                      child: Text(
+                        'Not sure where to start? Pick the path that fits you today.',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          height: 1.45,
+                          color: const Color(0xFF78716C),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 6),
-                _RevealStagger(
-                  animation: _seg(0.76, 0.9),
-                  child: Text(
-                    'Tap a card to read more — flip for the full story.',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      height: 1.45,
-                      color: const Color(0xFF78716C),
+                    const SizedBox(height: 16),
+                    _HomeExperienceCard(offer: _kHomeExperiences[0], animation: exp0),
+                    const SizedBox(height: 14),
+                    _HomeExperienceCard(offer: _kHomeExperiences[1], animation: exp1),
+                    const SizedBox(height: 14),
+                    _HomeExperienceCard(offer: _kHomeExperiences[2], animation: exp2),
+                    const SizedBox(height: 28),
+                    _EditorialPhotoBand(
+                      asset: 'assets/images/intro.jpg',
+                      caption: 'Tranquility atmosphere',
+                      animation: wideB,
                     ),
-                  ),
+                    const SizedBox(height: 28),
+                    _RevealStagger(
+                      animation: storiesH,
+                      child: Text(
+                        'Why scalp care matters',
+                        style: GoogleFonts.playfairDisplay(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          color: kCharcoal,
+                          height: 1.1,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    _RevealStagger(
+                      animation: _seg(0.76, 0.9),
+                      child: Text(
+                        'Tap a card to read more — flip for the full story.',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          height: 1.45,
+                          color: const Color(0xFF78716C),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    _RevealStagger(
+                      animation: storiesBlock,
+                      child: Column(
+                        children: _kAboutStories
+                            .map(
+                              (_AboutStory story) => Padding(
+                                padding: const EdgeInsets.only(bottom: 14),
+                                child: _AboutFlipCard(story: story),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    _RevealStagger(
+                      animation: ctaAnim,
+                      child: const _BookRitualCard(),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
-                const SizedBox(height: 14),
-                _RevealStagger(
-                  animation: storiesBlock,
-                  child: Column(
-                    children: _kAboutStories
-                        .map(
-                          (_AboutStory story) => Padding(
-                            padding: const EdgeInsets.only(bottom: 14),
-                            child: _AboutFlipCard(story: story),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                _RevealStagger(
-                  animation: ctaAnim,
-                  child: const _BookRitualCard(),
-                ),
-                const SizedBox(height: 24),
-              ],
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
