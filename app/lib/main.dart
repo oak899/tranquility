@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -16,6 +15,22 @@ const String kBookNowUrl =
 const String kInstagramUrl = 'https://www.instagram.com/tranquility.oakbrook/';
 const String kFacebookUrl = 'https://www.facebook.com/p/Tranquility-Hydrotherapy-61570059159325/';
 const String kYelpUrl = 'https://www.yelp.com/biz/tranquility-hydrotherapy-oakbrook-terrace-2';
+
+/// Opens in Google Maps (search) for the salon address.
+const String kSalonGoogleMapsUrl =
+    'https://www.google.com/maps/search/?api=1&query=17W580%20Butterfield%20Rd%20Suit%20G%2C%202F%2C%20Oakbrook%20Terrace%2C%20IL%2060181';
+
+const String kSalonPhoneDisplay = '(630) 590-3188';
+const String kSalonPhoneTel = 'tel:+16305903188';
+const String kSalonEmailAddress = 'tranquilityhydrotherapy@gmail.com';
+const String kSalonEmailMailto = 'mailto:tranquilityhydrotherapy@gmail.com';
+
+/// Font Awesome 6 brands (`fab`), from bundled [assets/fonts/fa-brands-400.ttf].
+/// We ship the full TTF so glyphs are not broken by Flutter's icon font tree-shaking
+/// (which can corrupt subset fonts for `font_awesome_flutter` on web/release builds).
+const IconData kBrandIconYelp = IconData(0xf1e9, fontFamily: 'TranquilityFaBrands');
+const IconData kBrandIconFacebookF = IconData(0xf39e, fontFamily: 'TranquilityFaBrands');
+const IconData kBrandIconInstagram = IconData(0xf16d, fontFamily: 'TranquilityFaBrands');
 
 /// Brand marks resolved via public favicon endpoints (same sites as salon retail partners).
 const String kOwayBrandIconUrl =
@@ -304,8 +319,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class _HomeVisitSection extends StatelessWidget {
-  const _HomeVisitSection();
+class _AboutVisitSection extends StatelessWidget {
+  const _AboutVisitSection();
 
   static const List<String> _stripImages = <String>[
     'assets/images/about1.jpg',
@@ -313,11 +328,19 @@ class _HomeVisitSection extends StatelessWidget {
     'assets/images/bg_2.jpg',
   ];
 
+  Future<void> _openLink(BuildContext context, String url, String errorLabel) async {
+    final bool ok = await launchExternalUrl(url);
+    if (!context.mounted || ok) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Could not open $errorLabel')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      margin: EdgeInsets.zero,
+      margin: const EdgeInsets.only(bottom: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
@@ -346,6 +369,126 @@ class _HomeVisitSection extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Text(
+                  'Plan your visit',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: kCharcoal,
+                    height: 1.1,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Call, email, or stop by — we are here Mon–Sun.',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    height: 1.45,
+                    color: const Color(0xFF78716C),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _openLink(context, kSalonPhoneTel, 'phone'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: kGold.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.phone_rounded, color: kCharcoal, size: 22),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Call us',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF78716C),
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  kSalonPhoneDisplay,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w700,
+                                    color: kCharcoal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right_rounded, color: kGold.withOpacity(0.85)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Divider(height: 1, thickness: 1, color: Colors.black.withOpacity(0.06)),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => _openLink(context, kSalonEmailMailto, 'email'),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        children: <Widget>[
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: kGold.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.email_outlined, color: kCharcoal, size: 22),
+                          ),
+                          const SizedBox(width: 14),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  'Email',
+                                  style: GoogleFonts.inter(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF78716C),
+                                    letterSpacing: 0.3,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  kSalonEmailAddress,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: kCharcoal,
+                                    height: 1.25,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right_rounded, color: kGold.withOpacity(0.85)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Divider(height: 1, thickness: 1, color: Colors.black.withOpacity(0.08)),
+                const SizedBox(height: 16),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -402,23 +545,93 @@ class _HomeVisitSection extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Icon(Icons.location_on_outlined, size: 20, color: kGold.withOpacity(0.95)),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        '17W580 Butterfield Rd Suit G, 2F · Oakbrook Terrace, IL 60181',
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          height: 1.45,
-                          fontWeight: FontWeight.w400,
-                          color: const Color(0xFF57534E),
+                Material(
+                  color: const Color(0xFFE7E2DA),
+                  borderRadius: BorderRadius.circular(14),
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      launchExternalUrl(kSalonGoogleMapsUrl).then((bool ok) {
+                        if (!context.mounted || ok) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Could not open Google Maps.')),
+                        );
+                      });
+                    },
+                    child: Ink(
+                      height: 148,
+                      decoration: const BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: <Color>[
+                            Color(0xFFF5F1EB),
+                            Color(0xFFD8D2C8),
+                            Color(0xFFBAB3A8),
+                          ],
                         ),
                       ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Positioned(
+                            right: -20,
+                            bottom: -24,
+                            child: Icon(
+                              Icons.map_rounded,
+                              size: 120,
+                              color: Colors.white.withOpacity(0.35),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Icon(Icons.location_on_rounded, color: kGold.withOpacity(0.95), size: 32),
+                                const SizedBox(height: 8),
+                                Text(
+                                  '17W580 Butterfield Rd Suit G, 2F',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: kCharcoal,
+                                    height: 1.35,
+                                  ),
+                                ),
+                                Text(
+                                  'Oakbrook Terrace, IL 60181',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF57534E),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(Icons.open_in_new_rounded, size: 16, color: kGold.withOpacity(0.95)),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      'Open in Google Maps',
+                                      style: GoogleFonts.inter(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w700,
+                                        color: kGold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -429,54 +642,46 @@ class _HomeVisitSection extends StatelessWidget {
   }
 }
 
-class _SocialLaunchButton extends StatelessWidget {
-  const _SocialLaunchButton({
-    required this.label,
+/// Same brand marks as https://tranquilityhydrotherapy.com/index.html footer
+/// (`fab fa-yelp`, `fab fa-facebook-f`, `fab fa-instagram`).
+class _SocialIconButton extends StatelessWidget {
+  const _SocialIconButton({
+    required this.tooltip,
     required this.url,
-    required this.backgroundColor,
     required this.icon,
+    required this.hoverColor,
   });
 
-  final String label;
+  final String tooltip;
   final String url;
-  final Color backgroundColor;
   final IconData icon;
+  /// Tailwind-style hover tint from the site (e.g. hover:text-red-500).
+  final Color hoverColor;
+
+  static const Color _stone400 = Color(0xFFA8A29E);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: backgroundColor,
-      borderRadius: BorderRadius.circular(12),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
+    return Tooltip(
+      message: tooltip,
+      child: IconButton(
+        iconSize: 28,
+        padding: const EdgeInsets.all(12),
+        constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+        style: IconButton.styleFrom(
+          foregroundColor: _stone400,
+          hoverColor: hoverColor.withOpacity(0.14),
+          highlightColor: hoverColor.withOpacity(0.12),
+        ),
+        onPressed: () {
           launchExternalUrl(url).then((bool ok) {
             if (!context.mounted || ok) return;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Could not open $label')),
+              SnackBar(content: Text('Could not open $tooltip')),
             );
           });
         },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              FaIcon(icon, color: Colors.white, size: 20),
-              const SizedBox(width: 10),
-              Text(
-                label,
-                style: GoogleFonts.inter(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Icon(Icons.open_in_new_rounded, color: Colors.white.withOpacity(0.9), size: 16),
-            ],
-          ),
-        ),
+        icon: Icon(icon, color: _stone400),
       ),
     );
   }
@@ -550,6 +755,348 @@ class _AboutStory {
   final String body;
 }
 
+/// Copy structure from https://tranquilityhydrotherapy.com/aboutus.html
+class _AboutPillarLine {
+  const _AboutPillarLine({
+    required this.titleLead,
+    required this.titleRest,
+    required this.body,
+  });
+
+  final String titleLead;
+  final String titleRest;
+  final String body;
+}
+
+const List<_AboutPillarLine> _kAboutPillars = <_AboutPillarLine>[
+  _AboutPillarLine(
+    titleLead: 'Beyond Traditional',
+    titleRest: 'Hair Care',
+    body:
+        'We combine advanced scalp care techniques with deep, therapeutic relaxation to elevate your well-being.',
+  ),
+  _AboutPillarLine(
+    titleLead: 'An Experience',
+    titleRest: 'Designed for You',
+    body:
+        'No two guests are the same. Every session is carefully customized to meet your unique needs and preferences.',
+  ),
+  _AboutPillarLine(
+    titleLead: 'Care That Evolves',
+    titleRest: 'With You',
+    body:
+        'Whether you seek pure relaxation or visible results, we adapt our approach to match your journey over time.',
+  ),
+];
+
+class _AboutHeroSection extends StatelessWidget {
+  const _AboutHeroSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(22, 28, 22, 26),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[
+              Colors.white,
+              kGold.withOpacity(0.1),
+            ],
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'A Ritual of Care',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 32,
+                fontWeight: FontWeight.w700,
+                color: kCharcoal,
+                height: 1.08,
+              ),
+            ),
+            Text(
+              'and Restoration',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 32,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.italic,
+                color: kCharcoal,
+                height: 1.08,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              '"At Tranquility Hydrotherapy, we believe scalp care is more than a treatment—it\'s a ritual of relaxation, renewal, and balance."',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 17,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.italic,
+                color: const Color(0xFF44403C),
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              'Luxury head spa and scalp care in Oak Brook — organic products, advanced technology, and rituals tailored to you.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                height: 1.55,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF57534E),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutPillarsSection extends StatelessWidget {
+  const _AboutPillarsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 20, 18, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Our philosophy',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: kCharcoal,
+                height: 1.1,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'What guides every visit',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                height: 1.4,
+                color: const Color(0xFF78716C),
+              ),
+            ),
+            const SizedBox(height: 16),
+            for (int i = 0; i < _kAboutPillars.length; i++) ...<Widget>[
+              if (i > 0) const SizedBox(height: 14),
+              _AboutPillarTile(line: _kAboutPillars[i]),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutPillarTile extends StatelessWidget {
+  const _AboutPillarTile({required this.line});
+
+  final _AboutPillarLine line;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFAFAF9),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: Colors.black.withOpacity(0.06)),
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Container(
+              width: 4,
+              decoration: const BoxDecoration(
+                color: kGold,
+                borderRadius: BorderRadius.horizontal(left: Radius.circular(13)),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      line.titleLead,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: kCharcoal,
+                        height: 1.15,
+                      ),
+                    ),
+                    Text(
+                      line.titleRest,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.italic,
+                        color: kCharcoal,
+                        height: 1.15,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      line.body,
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        height: 1.5,
+                        color: const Color(0xFF57534E),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutAtmosphereSection extends StatelessWidget {
+  const _AboutAtmosphereSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Stack(
+            alignment: Alignment.bottomCenter,
+            children: <Widget>[
+              Image.asset(
+                'assets/images/intro.jpg',
+                height: 220,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                        Colors.transparent,
+                        Colors.black.withOpacity(0.65),
+                      ],
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 36, 16, 14),
+                    child: Text(
+                      'Tranquility Atmosphere',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.playfairDisplay(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        fontStyle: FontStyle.italic,
+                        color: const Color(0xFFFFFBF5),
+                        letterSpacing: 0.4,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AboutRitualCtaSection extends StatelessWidget {
+  const _AboutRitualCtaSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      color: kCharcoal,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            Text(
+              'Experience the Ritual',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 26,
+                fontWeight: FontWeight.w700,
+                color: const Color(0xFFFFFBF5),
+                height: 1.12,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Step away from the noise and allow yourself a moment of true restoration.',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                height: 1.55,
+                color: const Color(0xFFD6D3D1),
+              ),
+            ),
+            const SizedBox(height: 22),
+            FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: kGold,
+                foregroundColor: kCharcoal,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+              onPressed: () {
+                launchTranquilityBookingUrl().then((bool ok) {
+                  if (!context.mounted || ok) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Could not open the booking page.')),
+                  );
+                });
+              },
+              child: Text(
+                'Book your visit',
+                style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _AboutQuickLinksCard extends StatelessWidget {
   const _AboutQuickLinksCard();
 
@@ -566,20 +1113,6 @@ class _AboutQuickLinksCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           ListTile(
-            leading: const Icon(Icons.card_giftcard_rounded, color: kGold),
-            title: Text('Gift cards', style: Theme.of(context).textTheme.titleMedium),
-            subtitle: Text(
-              'Purchase, redeem, and booking',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
-            onTap: () => _open(
-              context,
-              const SecondaryScaffold(title: 'Gift Cards', child: GiftPage()),
-            ),
-          ),
-          Divider(height: 1, color: Colors.black.withOpacity(0.06)),
-          ListTile(
             leading: const Icon(Icons.help_outline_rounded, color: kGold),
             title: Text('FAQ', style: Theme.of(context).textTheme.titleMedium),
             subtitle: Text(
@@ -590,20 +1123,6 @@ class _AboutQuickLinksCard extends StatelessWidget {
             onTap: () => _open(
               context,
               const SecondaryScaffold(title: 'FAQ', child: FaqPage()),
-            ),
-          ),
-          Divider(height: 1, color: Colors.black.withOpacity(0.06)),
-          ListTile(
-            leading: const Icon(Icons.contact_phone_rounded, color: kGold),
-            title: Text('Contact', style: Theme.of(context).textTheme.titleMedium),
-            subtitle: Text(
-              'Address, phone, hours',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
-            onTap: () => _open(
-              context,
-              const SecondaryScaffold(title: 'Contact', child: ContactPage()),
             ),
           ),
         ],
@@ -643,29 +1162,29 @@ class _AboutFollowUsSection extends StatelessWidget {
                 color: const Color(0xFF78716C),
               ),
             ),
-            const SizedBox(height: 14),
-            const Wrap(
-              spacing: 12,
-              runSpacing: 12,
-              alignment: WrapAlignment.start,
+            const SizedBox(height: 12),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _SocialLaunchButton(
-                  label: 'Instagram',
-                  url: kInstagramUrl,
-                  backgroundColor: Color(0xFFE4405F),
-                  icon: FontAwesomeIcons.instagram,
-                ),
-                _SocialLaunchButton(
-                  label: 'Facebook',
-                  url: kFacebookUrl,
-                  backgroundColor: Color(0xFF1877F2),
-                  icon: FontAwesomeIcons.facebookF,
-                ),
-                _SocialLaunchButton(
-                  label: 'Yelp',
+                _SocialIconButton(
+                  tooltip: 'Yelp',
                   url: kYelpUrl,
-                  backgroundColor: Color(0xFFD32323),
-                  icon: FontAwesomeIcons.yelp,
+                  icon: kBrandIconYelp,
+                  hoverColor: Color(0xFFEF4444),
+                ),
+                SizedBox(width: 32),
+                _SocialIconButton(
+                  tooltip: 'Facebook',
+                  url: kFacebookUrl,
+                  icon: kBrandIconFacebookF,
+                  hoverColor: Color(0xFF2563EB),
+                ),
+                SizedBox(width: 32),
+                _SocialIconButton(
+                  tooltip: 'Instagram',
+                  url: kInstagramUrl,
+                  icon: kBrandIconInstagram,
+                  hoverColor: Color(0xFFDB2777),
                 ),
               ],
             ),
@@ -715,17 +1234,16 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return _PageBackground(
-      imageAsset: 'assets/images/about1.jpg',
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: const <Widget>[
-          _TopBanner(
-            title: 'About Us',
-            subtitle: 'Gift cards, FAQ, contact & social',
-          ),
-          _AboutFollowUsSection(),
-          _HomeVisitSection(),
+          _AboutHeroSection(),
+          _AboutPillarsSection(),
+          _AboutAtmosphereSection(),
+          _AboutRitualCtaSection(),
+          _AboutVisitSection(),
           _AboutQuickLinksCard(),
+          _AboutFollowUsSection(),
         ],
       ),
     );
@@ -2320,57 +2838,6 @@ class FaqPage extends StatelessWidget {
   }
 }
 
-class GiftPage extends StatelessWidget {
-  const GiftPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return _PageBackground(
-      imageAsset: 'assets/images/giftcard.png',
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: const <Widget>[
-          _TopBanner(
-            title: 'Gift Cards',
-            subtitle: 'GIFT CARDS',
-          ),
-          _SectionCard(
-            title: 'Gift Message',
-            body:
-                'Surprise your loved ones with the gift of relaxation and healthy scalp care. Gift cards can be used toward all available services.',
-          ),
-          _BookNowLaunchCard(
-            headline: 'Book / Redeem',
-            subline: 'Use your gift card or book a service online',
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ContactPage extends StatelessWidget {
-  const ContactPage({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return _PageBackground(
-      imageAsset: 'assets/images/bg_2.jpg',
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: const <Widget>[
-          _TopBanner(title: 'Contact Us', subtitle: 'Get in touch'),
-          _SectionCard(
-            title: 'Address',
-            body: '17W580 Butterfield Rd Suit G, 2F, Oakbrook Terrace, IL 60181',
-          ),
-          _SectionCard(title: 'Phone', body: '(630) 590-3188'),
-          _SectionCard(title: 'Email', body: 'tranquilityhydrotherapy@gmail.com'),
-          _SectionCard(title: 'Open Hours', body: 'MON - SUN : 10:00 AM - 8:00 PM'),
-        ],
-      ),
-    );
-  }
-}
-
 class _ServiceCard extends StatelessWidget {
   const _ServiceCard({required this.item});
   final ServiceItem item;
@@ -2506,30 +2973,6 @@ class _TopBanner extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SectionCard extends StatelessWidget {
-  const _SectionCard({required this.title, required this.body});
-  final String title;
-  final String body;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(title, style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            Text(body, style: Theme.of(context).textTheme.bodyMedium),
-          ],
-        ),
       ),
     );
   }
