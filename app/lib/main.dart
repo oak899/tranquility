@@ -141,45 +141,6 @@ class _SiteShellState extends State<SiteShell> {
     }
   }
 
-  void _openSecondaryMenu() {
-    showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      backgroundColor: kCream,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const ListTile(title: Text('More'), subtitle: Text('二级页面')),
-              ListTile(
-                leading: const Icon(Icons.card_giftcard_rounded, color: kGold),
-                title: const Text('Gift Cards'),
-                onTap: () => _pushSecondary(const SecondaryScaffold(title: 'Gift Cards', child: GiftPage())),
-              ),
-              ListTile(
-                leading: const Icon(Icons.help_rounded, color: kGold),
-                title: const Text('FAQ'),
-                onTap: () => _pushSecondary(const SecondaryScaffold(title: 'FAQ', child: FaqPage())),
-              ),
-              ListTile(
-                leading: const Icon(Icons.contact_phone_rounded, color: kGold),
-                title: const Text('Contact'),
-                onTap: () => _pushSecondary(const SecondaryScaffold(title: 'Contact', child: ContactPage())),
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _pushSecondary(Widget page) {
-    Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute<void>(builder: (_) => page));
-  }
-
   void _bookNow() {
     launchTranquilityBookingUrl().then((bool ok) {
       if (!mounted || ok) return;
@@ -192,30 +153,27 @@ class _SiteShellState extends State<SiteShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: null,
-        actions: <Widget>[
-          IconButton(onPressed: _openSecondaryMenu, icon: const Icon(Icons.apps_rounded), tooltip: 'More'),
-        ],
-      ),
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 420),
-        switchInCurve: Curves.easeOutCubic,
-        switchOutCurve: Curves.easeInCubic,
-        transitionBuilder: (Widget child, Animation<double> animation) {
-          final double dx = _index >= _lastIndex ? 0.08 : -0.08;
-          final Animation<Offset> offset = Tween<Offset>(
-            begin: Offset(dx, 0),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(position: offset, child: child),
-          );
-        },
-        child: KeyedSubtree(
-          key: ValueKey<int>(_index),
-          child: _body(),
+      body: SafeArea(
+        bottom: false,
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 420),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            final double dx = _index >= _lastIndex ? 0.08 : -0.08;
+            final Animation<Offset> offset = Tween<Offset>(
+              begin: Offset(dx, 0),
+              end: Offset.zero,
+            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+            return FadeTransition(
+              opacity: animation,
+              child: SlideTransition(position: offset, child: child),
+            );
+          },
+          child: KeyedSubtree(
+            key: ValueKey<int>(_index),
+            child: _body(),
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -280,7 +238,24 @@ class SecondaryScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text(title)), body: child);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          title,
+          style: GoogleFonts.playfairDisplay(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: kCharcoal,
+          ),
+        ),
+        backgroundColor: kCream,
+        foregroundColor: kCharcoal,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+      ),
+      body: child,
+    );
   }
 }
 
@@ -321,10 +296,6 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: _AboutFlipCard(story: story),
               ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: _HomeVisitSection(),
             ),
           ],
         ),
@@ -446,52 +417,6 @@ class _HomeVisitSection extends StatelessWidget {
                           color: const Color(0xFF57534E),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Divider(height: 1, color: Colors.black.withOpacity(0.06)),
-                const SizedBox(height: 16),
-                Text(
-                  'Follow us',
-                  style: GoogleFonts.playfairDisplay(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: kCharcoal,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Stay in touch for specials, hours, and new treatments.',
-                  style: GoogleFonts.inter(
-                    fontSize: 13,
-                    height: 1.4,
-                    color: const Color(0xFF78716C),
-                  ),
-                ),
-                const SizedBox(height: 14),
-                const Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  alignment: WrapAlignment.start,
-                  children: <Widget>[
-                    _SocialLaunchButton(
-                      label: 'Instagram',
-                      url: kInstagramUrl,
-                      backgroundColor: Color(0xFFE4405F),
-                      icon: FontAwesomeIcons.instagram,
-                    ),
-                    _SocialLaunchButton(
-                      label: 'Facebook',
-                      url: kFacebookUrl,
-                      backgroundColor: Color(0xFF1877F2),
-                      icon: FontAwesomeIcons.facebookF,
-                    ),
-                    _SocialLaunchButton(
-                      label: 'Yelp',
-                      url: kYelpUrl,
-                      backgroundColor: Color(0xFFD32323),
-                      icon: FontAwesomeIcons.yelp,
                     ),
                   ],
                 ),
@@ -625,6 +550,132 @@ class _AboutStory {
   final String body;
 }
 
+class _AboutQuickLinksCard extends StatelessWidget {
+  const _AboutQuickLinksCard();
+
+  void _open(BuildContext context, Widget page) {
+    Navigator.push<void>(context, MaterialPageRoute<void>(builder: (_) => page));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.card_giftcard_rounded, color: kGold),
+            title: Text('Gift cards', style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text(
+              'Purchase, redeem, and booking',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
+            onTap: () => _open(
+              context,
+              const SecondaryScaffold(title: 'Gift Cards', child: GiftPage()),
+            ),
+          ),
+          Divider(height: 1, color: Colors.black.withOpacity(0.06)),
+          ListTile(
+            leading: const Icon(Icons.help_outline_rounded, color: kGold),
+            title: Text('FAQ', style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text(
+              'Policies, preparation, and common questions',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
+            onTap: () => _open(
+              context,
+              const SecondaryScaffold(title: 'FAQ', child: FaqPage()),
+            ),
+          ),
+          Divider(height: 1, color: Colors.black.withOpacity(0.06)),
+          ListTile(
+            leading: const Icon(Icons.contact_phone_rounded, color: kGold),
+            title: Text('Contact', style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text(
+              'Address, phone, hours',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
+            onTap: () => _open(
+              context,
+              const SecondaryScaffold(title: 'Contact', child: ContactPage()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AboutFollowUsSection extends StatelessWidget {
+  const _AboutFollowUsSection();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Follow us',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: kCharcoal,
+                height: 1.1,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Stay in touch for specials, hours, and new treatments.',
+              style: GoogleFonts.inter(
+                fontSize: 13,
+                height: 1.45,
+                color: const Color(0xFF78716C),
+              ),
+            ),
+            const SizedBox(height: 14),
+            const Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              alignment: WrapAlignment.start,
+              children: <Widget>[
+                _SocialLaunchButton(
+                  label: 'Instagram',
+                  url: kInstagramUrl,
+                  backgroundColor: Color(0xFFE4405F),
+                  icon: FontAwesomeIcons.instagram,
+                ),
+                _SocialLaunchButton(
+                  label: 'Facebook',
+                  url: kFacebookUrl,
+                  backgroundColor: Color(0xFF1877F2),
+                  icon: FontAwesomeIcons.facebookF,
+                ),
+                _SocialLaunchButton(
+                  label: 'Yelp',
+                  url: kYelpUrl,
+                  backgroundColor: Color(0xFFD32323),
+                  icon: FontAwesomeIcons.yelp,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 const List<_AboutStory> _kAboutStories = <_AboutStory>[
   _AboutStory(
     image: 'assets/images/about1.jpg',
@@ -667,35 +718,14 @@ class AboutPage extends StatelessWidget {
       imageAsset: 'assets/images/about1.jpg',
       child: ListView(
         padding: const EdgeInsets.all(16),
-        children: <Widget>[
-          const _TopBanner(
+        children: const <Widget>[
+          _TopBanner(
             title: 'About Us',
-            subtitle: 'Contact / Gift Cards / FAQ',
+            subtitle: 'Gift cards, FAQ, contact & social',
           ),
-          const _SectionCard(
-            title: 'Gift Cards',
-            body:
-                'Surprise your loved ones with the gift of relaxation and healthy scalp care. Gift cards can be used toward all available services.',
-          ),
-          const _SectionCard(
-            title: 'Contact Us',
-            body:
-                '17W580 Butterfield Rd Suit G, 2F, Oakbrook Terrace, IL 60181\n(630) 590-3188\ntranquilityhydrotherapy@gmail.com',
-          ),
-          ...kFaqItems.map(
-            (FaqItem f) => Card(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: ExpansionTile(
-                title: Text(f.q, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontSize: 16)),
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                    child: Text(f.a),
-                  ),
-                ],
-              ),
-            ),
-          ),
+          _AboutFollowUsSection(),
+          _HomeVisitSection(),
+          _AboutQuickLinksCard(),
         ],
       ),
     );
@@ -803,20 +833,41 @@ class _AboutFront extends StatelessWidget {
           right: 14,
           bottom: 14,
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.fromLTRB(14, 11, 14, 11),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.52),
               borderRadius: BorderRadius.circular(12),
+              gradient: LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: <Color>[
+                  Colors.black.withOpacity(0.72),
+                  Colors.black.withOpacity(0.38),
+                ],
+              ),
+              border: Border.all(color: Colors.white.withOpacity(0.14)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.35),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
             child: Text(
               story.title,
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.playfairDisplay(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
-                height: 1.2,
+                color: const Color(0xFFFFFBF5),
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                fontStyle: FontStyle.italic,
+                height: 1.22,
+                letterSpacing: 0.35,
+                shadows: const <Shadow>[
+                  Shadow(color: Color(0x8C000000), blurRadius: 10, offset: Offset(0, 2)),
+                  Shadow(color: Color(0x4D000000), blurRadius: 3, offset: Offset(0, 1)),
+                ],
               ),
             ),
           ),
@@ -840,7 +891,7 @@ class _AboutBack extends StatelessWidget {
         children: <Widget>[
           Positioned.fill(
             child: Opacity(
-              opacity: 0.38,
+              opacity: 0.58,
               child: Image.asset(story.image, fit: BoxFit.cover),
             ),
           ),
@@ -851,8 +902,8 @@ class _AboutBack extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: <Color>[
-                    Colors.black.withOpacity(0.55),
-                    Colors.black.withOpacity(0.82),
+                    Colors.black.withOpacity(0.38),
+                    Colors.black.withOpacity(0.58),
                   ],
                 ),
               ),
@@ -862,9 +913,9 @@ class _AboutBack extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(14, 52, 14, 14),
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: const Color(0xE6161616),
+                color: const Color(0x9A1C1C1C),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.white.withOpacity(0.12)),
+                border: Border.all(color: Colors.white.withOpacity(0.18)),
               ),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
@@ -888,7 +939,7 @@ class _AboutBack extends StatelessWidget {
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                           height: 1.5,
-                          color: const Color(0xFFE7E5E4),
+                          color: const Color(0xFFFAFAF9),
                         ),
                       ),
                     ],
@@ -1529,34 +1580,669 @@ class _BookNowLaunchCard extends StatelessWidget {
   }
 }
 
+class _MembershipHero extends StatelessWidget {
+  const _MembershipHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: SizedBox(
+        height: 210,
+        width: double.infinity,
+        child: Stack(
+          fit: StackFit.expand,
+          children: <Widget>[
+            Image.asset('assets/images/membership.jpg', fit: BoxFit.cover),
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.black.withOpacity(0.15),
+                    Colors.black.withOpacity(0.72),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text(
+                    'Member & gift',
+                    style: GoogleFonts.inter(
+                      color: const Color(0xFFE7E5E4),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 2.4,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'A monthly ritual of restoration',
+                    style: GoogleFonts.playfairDisplay(
+                      color: Colors.white,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      fontStyle: FontStyle.italic,
+                      height: 1.1,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Consistent care, flexible perks, and gifts that invite calm.',
+                    style: GoogleFonts.inter(
+                      color: const Color(0xFFF5F5F4),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MembershipPhotoStrip extends StatelessWidget {
+  const _MembershipPhotoStrip();
+
+  static const List<String> _paths = <String>[
+    'assets/images/image_3.jpg',
+    'assets/images/image_6.jpg',
+    'assets/images/image_2.jpg',
+    'assets/images/about5.jpg',
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: SizedBox(
+        height: 72,
+        child: Row(
+          children: <Widget>[
+            for (int i = 0; i < _paths.length; i++)
+              Expanded(
+                child: Image.asset(_paths[i], fit: BoxFit.cover, height: 72),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MembershipChoiceTile extends StatelessWidget {
+  const _MembershipChoiceTile({
+    required this.imageAsset,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String imageAsset;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(14),
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: Image.asset(imageAsset, fit: BoxFit.cover),
+          ),
+          Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.78),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: 12,
+            right: 12,
+            bottom: 12,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: GoogleFonts.playfairDisplay(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFFE7E5E4),
+                    fontSize: 12,
+                    height: 1.3,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MembershipIconLine extends StatelessWidget {
+  const _MembershipIconLine({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: kGold.withOpacity(0.18),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: kCharcoal, size: 22),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: kCharcoal,
+                    height: 1.2,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    height: 1.45,
+                    color: const Color(0xFF57534E),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MembershipPlanCard extends StatelessWidget {
+  const _MembershipPlanCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+        side: BorderSide(color: kGold.withOpacity(0.65), width: 1.5),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Membership plan',
+              style: GoogleFonts.playfairDisplay(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: kCharcoal,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: <Widget>[
+                Text(
+                  '\$148',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 36,
+                    fontWeight: FontWeight.w700,
+                    color: kGold,
+                    height: 1,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  '/ month',
+                  style: GoogleFonts.inter(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: kCharcoal,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            _MembershipPlanCard._planLine(Icons.check_circle_outline_rounded, 'Includes one treatment per month'),
+            _MembershipPlanCard._planLine(Icons.autorenew_rounded, 'Convenient auto-renewal'),
+            _MembershipPlanCard._planLine(Icons.cancel_outlined, 'Cancel anytime — no hidden fees'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _planLine(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(icon, size: 20, color: kGold.withOpacity(0.95)),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.inter(
+                fontSize: 14,
+                height: 1.45,
+                color: const Color(0xFF44403C),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GiftCardShowcase extends StatelessWidget {
+  const _GiftCardShowcase();
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(
+            height: 200,
+            child: Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                Image.asset('assets/images/giftcard.png', fit: BoxFit.cover),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                        Colors.black.withOpacity(0.2),
+                        Colors.black.withOpacity(0.65),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        'Gift of choice',
+                        style: GoogleFonts.inter(
+                          color: const Color(0xFFFFFBEB),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 2.2,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Starting from \$50',
+                        style: GoogleFonts.playfairDisplay(
+                          color: Colors.white,
+                          fontSize: 26,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Give the gift of relaxation',
+                  style: GoogleFonts.playfairDisplay(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    color: kCharcoal,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  'Perfect for any occasion — share a moment of calm and care with those you love.',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    height: 1.5,
+                    color: const Color(0xFF57534E),
+                  ),
+                ),
+                const SizedBox(height: 14),
+                const Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: <Widget>[
+                    _GiftPill(icon: Icons.shopping_bag_outlined, label: 'Online purchase available'),
+                    _GiftPill(icon: Icons.storefront_outlined, label: 'Redeem in-store'),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Whether it’s a birthday, an anniversary, or a simple thank you, gift cards let your loved ones choose their own path to tranquility.',
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    height: 1.45,
+                    color: const Color(0xFF78716C),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GiftPill extends StatelessWidget {
+  const _GiftPill({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: kGold.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: kGold.withOpacity(0.35)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Icon(icon, size: 18, color: kCharcoal.withOpacity(0.85)),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: kCharcoal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class MembershipPage extends StatelessWidget {
   const MembershipPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return _PageBackground(
-      imageAsset: 'assets/images/membership.jpg',
       child: ListView(
         padding: const EdgeInsets.all(16),
-        children: const <Widget>[
-          _TopBanner(
-            title: 'Membership',
-            subtitle: 'Join our exclusive membership and enjoy bonus credits.',
+        children: <Widget>[
+          const _MembershipHero(),
+          const SizedBox(height: 14),
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.all(18),
+              child: Text(
+                'Our membership is designed to support your well-being through consistent care.',
+                style: GoogleFonts.inter(
+                  fontSize: 15,
+                  height: 1.55,
+                  fontWeight: FontWeight.w400,
+                  color: const Color(0xFF44403C),
+                ),
+              ),
+            ),
           ),
-          _SectionCard(
-            title: 'Overview',
-            body:
-                'Enhance your experience with extra value! Our membership program rewards you with additional credits every time you deposit.',
+          const SizedBox(height: 14),
+          const _MembershipPhotoStrip(),
+          const SizedBox(height: 16),
+          Text(
+            'Your experience',
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.italic,
+              color: kCharcoal,
+            ),
           ),
-          _SectionCard(
-            title: 'Membership Tiers',
-            body:
-                'Deposit \$1000, Get \$350 Free (maximum bonus)\nDeposit \$800, Get \$200 Free\nDeposit \$500, Get \$100 Free\nDeposit \$300, Get \$50 Free',
+          const SizedBox(height: 4),
+          Text(
+            'Each month, enjoy one of the following:',
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: const Color(0xFF57534E),
+            ),
           ),
-          _SectionCard(
-            title: 'Member Benefits',
-            body:
-                'Retail Product Discounts: 15% off scalp care products and oils.\nBirthday Gift: special gift during birthday month.\nReferral Program: discounts or free services for referrals.\nExclusive Events: wellness workshops, previews, spa parties.',
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 168,
+            child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints c) {
+                if (c.maxWidth < 360) {
+                  return const Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: _MembershipChoiceTile(
+                          imageAsset: 'assets/images/image_3.jpg',
+                          title: '90-Minute Head Spa',
+                          subtitle: 'Deep hydration & advanced therapy',
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Expanded(
+                        child: _MembershipChoiceTile(
+                          imageAsset: 'assets/images/image_6.jpg',
+                          title: '60-Min Head Spa + Facial',
+                          subtitle: 'Holistic care for scalp & skin',
+                        ),
+                      ),
+                    ],
+                  );
+                }
+                return const Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: _MembershipChoiceTile(
+                        imageAsset: 'assets/images/image_3.jpg',
+                        title: '90-Minute Head Spa',
+                        subtitle: 'Deep hydration & advanced therapy',
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: _MembershipChoiceTile(
+                        imageAsset: 'assets/images/image_6.jpg',
+                        title: '60-Min Head Spa + Facial',
+                        subtitle: 'Holistic care for scalp & skin',
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 18),
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Benefits',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: kCharcoal,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const _MembershipIconLine(
+                    icon: Icons.savings_outlined,
+                    title: 'Unused sessions roll over',
+                    subtitle: 'Credits stay valid for up to 12 months.',
+                  ),
+                  const _MembershipIconLine(
+                    icon: Icons.event_available_outlined,
+                    title: 'Flexible scheduling',
+                    subtitle: 'Book at your convenience with ease.',
+                  ),
+                  const _MembershipIconLine(
+                    icon: Icons.self_improvement_outlined,
+                    title: 'No pressure to use monthly',
+                    subtitle: 'Consistency without the stress.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            margin: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(18, 18, 18, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    'Member privileges',
+                    style: GoogleFonts.playfairDisplay(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      color: kCharcoal,
+                    ),
+                  ),
+                  const SizedBox(height: 14),
+                  const _MembershipIconLine(
+                    icon: Icons.local_offer_outlined,
+                    title: '10% off retail products',
+                    subtitle: 'Take your home ritual to the next level.',
+                  ),
+                  const _MembershipIconLine(
+                    icon: Icons.star_border_rounded,
+                    title: 'Priority booking',
+                    subtitle: 'Preferred access to our most wanted time slots.',
+                  ),
+                  const _MembershipIconLine(
+                    icon: Icons.face_retouching_natural_outlined,
+                    title: 'Personalized care',
+                    subtitle: 'Custom treatments tailored to your scalp’s evolution.',
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          const _MembershipPlanCard(),
+          const _BookNowLaunchCard(
+            headline: 'Begin your ritual',
+            subline: 'Join or manage membership through our booking site',
+          ),
+          const SizedBox(height: 22),
+          Text(
+            'Gift cards',
+            style: GoogleFonts.playfairDisplay(
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.italic,
+              color: kCharcoal,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Treat someone special — online purchase & in-store redemption.',
+            style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF78716C), height: 1.35),
+          ),
+          const SizedBox(height: 12),
+          const _GiftCardShowcase(),
+          const SizedBox(height: 8),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: SizedBox(
+              height: 88,
+              child: Row(
+                children: <Widget>[
+                  Expanded(child: Image.asset('assets/images/intro.jpg', fit: BoxFit.cover)),
+                  Expanded(child: Image.asset('assets/images/image_2.jpg', fit: BoxFit.cover)),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          const _BookNowLaunchCard(
+            headline: 'Buy gift card',
+            subline: 'Purchase online — redeem in store',
           ),
         ],
       ),
