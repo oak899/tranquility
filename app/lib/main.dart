@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -291,6 +292,20 @@ class _HomeExperienceOffer {
   final String subtitle;
 }
 
+/// Full-bleed art for the Home hero; one primary and one soft overlay are picked at random.
+const List<String> _kHeroCoverPool = <String>[
+  'assets/images/bg_4.jpg',
+  'assets/images/bg_2.jpg',
+  'assets/images/intro.jpg',
+  'assets/images/about1.jpg',
+  'assets/images/about2.jpg',
+  'assets/images/about3.jpg',
+  'assets/images/about4.jpg',
+  'assets/images/about5.jpg',
+  'assets/images/about6.jpg',
+  'assets/images/membership.jpg',
+];
+
 const List<_HomeExperienceOffer> _kHomeExperiences = <_HomeExperienceOffer>[
   _HomeExperienceOffer(
     imageAsset: 'assets/images/about1.jpg',
@@ -339,6 +354,8 @@ class _HomeImmersiveHero extends StatelessWidget {
   const _HomeImmersiveHero({
     required this.viewportHeight,
     required this.parallaxOffset,
+    required this.primaryAsset,
+    required this.overlayAsset,
     required this.logoAnim,
     required this.titleAnim,
     required this.subAnim,
@@ -348,6 +365,9 @@ class _HomeImmersiveHero extends StatelessWidget {
   /// Height of the visible body (fills first screen above bottom nav on phones).
   final double viewportHeight;
   final double parallaxOffset;
+  final String primaryAsset;
+  /// Optional second photo blended softly over [primaryAsset]; empty string means skip.
+  final String overlayAsset;
   final Animation<double> logoAnim;
   final Animation<double> titleAnim;
   final Animation<double> subAnim;
@@ -358,18 +378,19 @@ class _HomeImmersiveHero extends StatelessWidget {
     final MediaQueryData mq = MediaQuery.of(context);
     final double topInset = mq.viewPadding.top;
     final double w = mq.size.width;
-    // Slightly shorter than full viewport so the next section peeks — feels less “boxed in”.
-    final double heroHeight = math.min(
-      math.max(viewportHeight * 0.9, 396),
-      viewportHeight,
-    );
+    // Full viewport hero again (user request): first fold is the cover.
+    final double heroHeight = math.max(420, viewportHeight);
     final double parallax = (parallaxOffset * 0.32).clamp(0.0, 96.0);
     // Logo scales with hero height but stays readable on small phones / large phablets.
     final double logoMaxH = math.min(math.max(heroHeight * 0.24, 108.0), 216.0);
     final double titleSize = w < 360 ? 26.0 : (w < 420 ? 28.0 : 30.0);
-    const Color kHeroWashTop = Color(0xFFFFF7EF);
-    const Color kHeroMist = Color(0xFF6B8F85);
-    const Color kHeroDeep = Color(0xFF1C2C28);
+    // Warm editorial grade (no cool green) so type + kGold read as one spa story.
+    const Color kHeroShadow = Color(0xFF1A1410);
+    const Color kHeroRich = Color(0xFF120F0D);
+    const Color kHeroParchment = Color(0xFFF2E8DC);
+    const Color kHeroMusk = Color(0xFFB8A99A);
+    const Color kHeroGlass = Color(0xFF2A2622);
+    const Color kHeroBorder = Color(0xFFD4B896);
 
     return ClipRect(
       child: SizedBox(
@@ -383,36 +404,89 @@ class _HomeImmersiveHero extends StatelessWidget {
               child: Transform.scale(
                 scale: 1.05,
                 alignment: Alignment.center,
-                child: ColorFiltered(
-                  colorFilter: const ColorFilter.matrix(<double>[
-                    1.04, 0, 0, 0, 14,
-                    0, 1.03, 0, 0, 10,
-                    0, 0, 1.02, 0, 8,
-                    0, 0, 0, 1, 0,
-                  ]),
-                  child: Image.asset(
-                    'assets/images/bg_4.jpg',
-                    fit: BoxFit.cover,
-                    height: heroHeight + 80,
-                    width: double.infinity,
-                    alignment: Alignment.center,
-                  ),
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: <Widget>[
+                    Image.asset(
+                      primaryAsset,
+                      key: ValueKey<String>(primaryAsset),
+                      fit: BoxFit.cover,
+                      height: heroHeight + 96,
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                    ),
+                    if (overlayAsset.isNotEmpty)
+                      Positioned.fill(
+                        child: IgnorePointer(
+                          child: Image.asset(
+                            overlayAsset,
+                            key: ValueKey<String>('overlay-$overlayAsset'),
+                            fit: BoxFit.cover,
+                            alignment: Alignment.topCenter,
+                            color: const Color(0xFFFFF4E8).withOpacity(0.1),
+                            colorBlendMode: BlendMode.softLight,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
-            // Warm rice-paper → airy sage → controlled depth (aligned with brand splash tones).
+            // Warm film grade: anchors typography without fighting random hero photos.
             DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  stops: const <double>[0.0, 0.28, 0.62, 1.0],
+                  stops: const <double>[0.0, 0.32, 0.58, 1.0],
                   colors: <Color>[
-                    kHeroWashTop.withOpacity(0.42),
-                    kHeroWashTop.withOpacity(0.12),
-                    kHeroMist.withOpacity(0.22),
-                    kHeroDeep.withOpacity(0.5),
+                    kHeroShadow.withOpacity(0.42),
+                    kHeroShadow.withOpacity(0.18),
+                    kHeroRich.withOpacity(0.5),
+                    kHeroRich.withOpacity(0.82),
                   ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: heroHeight * 0.35,
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      stops: const <double>[0.0, 0.55, 1.0],
+                      colors: <Color>[
+                        kHeroRich.withOpacity(0.55),
+                        kHeroRich.withOpacity(0.12),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: heroHeight * 0.18,
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: <Color>[
+                        kGold.withOpacity(0.07),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -425,97 +499,141 @@ class _HomeImmersiveHero extends StatelessWidget {
                     animation: logoAnim,
                     child: Transform.scale(
                       scale: 0.94 + 0.06 * logoAnim.value,
-                      child: SizedBox(
-                        height: logoMaxH,
-                        child: SvgPicture.asset(
-                          'assets/images/logo.svg',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: math.min(26, heroHeight * 0.045)),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFDFBF8).withOpacity(0.94),
-                      borderRadius: BorderRadius.circular(22),
-                      border: Border.all(color: const Color(0xFFE8E2DA)),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 24,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          _RevealStagger(
-                            animation: titleAnim,
-                            child: Text(
-                              'Luxury head spa experience in Oak Brook',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.playfairDisplay(
-                                fontSize: titleSize,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF1F1B18),
-                                height: 1.14,
-                              ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: kHeroGlass.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: kHeroBorder.withOpacity(0.28)),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.28),
+                                  blurRadius: 22,
+                                  offset: const Offset(0, 12),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 12),
-                          _RevealStagger(
-                            animation: subAnim,
-                            child: Text(
-                              'Relax. Reset. See real results.',
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: const Color(0xFF57534E),
-                                height: 1.45,
-                                letterSpacing: 0.2,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: math.min(18, heroHeight * 0.032)),
-                          _RevealStagger(
-                            animation: badgeAnim,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.center,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xFFE8E3DC),
-                                    borderRadius: BorderRadius.circular(999),
-                                    border: Border.all(color: const Color(0xFF78716C).withOpacity(0.35)),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                              child: SizedBox(
+                                height: logoMaxH,
+                                child: ColorFiltered(
+                                  colorFilter: const ColorFilter.mode(
+                                    Color(0xFFE8D5C4),
+                                    BlendMode.srcIn,
                                   ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Icon(Icons.star_rounded, color: kGold, size: 20),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '4.9 rated · Loved by 1,000+ clients',
-                                        style: GoogleFonts.inter(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w700,
-                                          color: const Color(0xFF292524),
-                                        ),
-                                      ),
-                                    ],
+                                  child: SvgPicture.asset(
+                                    'assets/images/logo.svg',
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: math.min(26, heroHeight * 0.045)),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(22),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: <Color>[
+                              kHeroGlass.withOpacity(0.52),
+                              kHeroGlass.withOpacity(0.62),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(22),
+                          border: Border.all(color: kHeroBorder.withOpacity(0.22)),
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.38),
+                              blurRadius: 28,
+                              offset: const Offset(0, 16),
+                            ),
+                          ],
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              _RevealStagger(
+                                animation: titleAnim,
+                                child: Text(
+                                  'Luxury head spa experience in Oak Brook',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.playfairDisplay(
+                                    fontSize: titleSize,
+                                    fontWeight: FontWeight.w700,
+                                    color: kHeroParchment,
+                                    height: 1.14,
+                                    letterSpacing: -0.2,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              _RevealStagger(
+                                animation: subAnim,
+                                child: Text(
+                                  'Relax. Reset. See real results.',
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: kHeroMusk,
+                                    height: 1.45,
+                                    letterSpacing: 0.15,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: math.min(18, heroHeight * 0.032)),
+                              _RevealStagger(
+                                animation: badgeAnim,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.center,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: kHeroRich.withOpacity(0.78),
+                                        borderRadius: BorderRadius.circular(999),
+                                        border: Border.all(color: kGold.withOpacity(0.38)),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Icon(Icons.star_rounded, color: kGold, size: 20),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            '4.9 rated · Loved by 1,000+ clients',
+                                            style: GoogleFonts.inter(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w600,
+                                              color: kHeroParchment.withOpacity(0.92),
+                                              letterSpacing: 0.05,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -661,6 +779,25 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin {
   late final ScrollController _scroll;
   late final AnimationController _entrance;
+  late String _heroPrimaryAsset;
+  late String _heroOverlayAsset;
+
+  void _shuffleHeroArt() {
+    final math.Random r = math.Random();
+    final List<String> pool = _kHeroCoverPool;
+    _heroPrimaryAsset = pool[r.nextInt(pool.length)];
+    if (pool.length <= 1) {
+      _heroOverlayAsset = '';
+      return;
+    }
+    String pick;
+    int guard = 0;
+    do {
+      pick = pool[r.nextInt(pool.length)];
+      guard++;
+    } while (pick == _heroPrimaryAsset && guard < 12);
+    _heroOverlayAsset = pick == _heroPrimaryAsset ? '' : pick;
+  }
 
   Animation<double> _seg(double start, double end) {
     return CurvedAnimation(
@@ -676,6 +813,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
+    _shuffleHeroArt();
     _scroll = ScrollController()..addListener(_onScroll);
     _entrance = AnimationController(
       vsync: this,
@@ -716,18 +854,30 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
           final double viewportH = constraints.maxHeight.isFinite
               ? constraints.maxHeight
               : MediaQuery.sizeOf(context).height;
-          return ListView(
-            controller: _scroll,
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              _HomeImmersiveHero(
-                viewportHeight: viewportH,
-                parallaxOffset: px,
-                logoAnim: heroLogo,
-                titleAnim: heroTitle,
-                subAnim: heroSub,
-                badgeAnim: heroBadge,
+          return RefreshIndicator(
+            color: kGold,
+            backgroundColor: kCream,
+            onRefresh: () async {
+              setState(_shuffleHeroArt);
+              await Future<void>.delayed(const Duration(milliseconds: 280));
+            },
+            child: ListView(
+              controller: _scroll,
+              padding: EdgeInsets.zero,
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
               ),
+              children: <Widget>[
+                _HomeImmersiveHero(
+                  viewportHeight: viewportH,
+                  parallaxOffset: px,
+                  primaryAsset: _heroPrimaryAsset,
+                  overlayAsset: _heroOverlayAsset,
+                  logoAnim: heroLogo,
+                  titleAnim: heroTitle,
+                  subAnim: heroSub,
+                  badgeAnim: heroBadge,
+                ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
                 child: Column(
@@ -824,6 +974,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                 ),
               ),
             ],
+            ),
           );
         },
       ),
