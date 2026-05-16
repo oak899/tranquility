@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Membership - Tranquility Hydrotherapy</title>
+
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+		<script src="https://cdn.tailwindcss.com"></script>
+
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+			rel="stylesheet" />
+
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body class="bg-stone-50 text-stone-900 antialiased overflow-x-hidden">
+		<nav
+			class="fixed w-full z-50 transition-all duration-300 glass-nav border-b border-stone-200/50"
+			id="mainNav">
+			<div class="max-w-7xl mx-auto px-6 lg:px-12">
+				<div class="flex justify-between items-center h-20">
+					<div class="text-xl tracking-[0.15em] font-light uppercase">
+						Tranquility Hydrotherapy
+					</div>
+					<div
+						class="hidden md:flex space-x-8 items-center text-sm tracking-wide uppercase">
+						<a href="index.html" class="hover:text-stone-500 transition-colors"
+							>Home</a
+						>
+						<a
+							href="services.html"
+							class="hover:text-stone-500 transition-colors"
+							>Services</a
+						>
+						<a href="membership.html" class="text-stone-500 transition-colors"
+							>Membership</a
+						>
+						<a
+							href="giftcard.html"
+							class="hover:text-stone-500 transition-colors"
+							>Gift Cards</a
+						>
+						<a
+							href="aboutus.html"
+							class="hover:text-stone-500 transition-colors"
+							>About</a
+						>
+						<a href="faq.html" class="hover:text-stone-500 transition-colors"
+							>FAQ</a
+						>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="bg-stone-900 text-white px-6 py-3 rounded-full hover:bg-stone-700 transition-all shadow-md"
+							>Book Now</a
+						>
+					</div>
+					<button
+						id="mobileMenuBtn"
+						class="md:hidden text-2xl focus:outline-none">
+						&#9776;
+					</button>
+				</div>
+			</div>
+		</nav>
+
+		<div
+			id="mobileMenu"
+			class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 px-6 shadow-2xl">
+			<button
+				id="closeMenuBtn"
+				class="absolute top-6 right-6 text-4xl text-stone-600 hover:text-stone-900 focus:outline-none">
+				&times;
+			</button>
+
+			<div
+				class="flex flex-col space-y-6 text-lg tracking-widest uppercase text-center mt-10">
+				<a
+					href="index.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Home</a
+				>
+				<a
+					href="services.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Services</a
+				>
+				<a
+					href="membership.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Membership</a
+				>
+				<a
+					href="giftcard.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Gift Cards</a
+				>
+				<a
+					href="aboutus.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>About</a
+				>
+				<a
+					href="faq.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>FAQ</a
+				>
+				<a
+					href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+					class="mobile-link bg-stone-900 text-white px-6 py-4 rounded-full mt-6 shadow-lg"
+					>Book Now</a
+				>
+			</div>
+		</div>
+
+		<section class="pt-40 pb-20 px-6 lg:px-12 bg-stone-100 text-center">
+			<div class="max-w-3xl mx-auto reveal reveal-up">
+				<h1 class="text-4xl md:text-5xl font-serif italic mb-8">
+					A Monthly Ritual of Restoration
+				</h1>
+				<p class="text-stone-600 font-light leading-relaxed text-xl">
+					Our membership is designed to support your well-being through
+					consistent care.
+				</p>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-white">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center mb-16 reveal reveal-up">
+					<h2 class="text-3xl font-serif italic mb-4">Your Experience</h2>
+					<p class="text-stone-400 uppercase tracking-widest text-sm">
+						Each month, enjoy one of the following:
+					</p>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+					<div
+						class="border border-stone-200 p-10 rounded-2xl text-center reveal reveal-left hover:shadow-lg transition-all">
+						<div
+							class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6">
+							<i class="fas fa-spa text-stone-400 text-2xl"></i>
+						</div>
+						<h3 class="text-xl font-medium tracking-wide mb-2 uppercase">
+							90-Minute Head Spa
+						</h3>
+						<p class="text-stone-500 font-light text-sm italic">
+							Deep hydration & advanced therapy
+						</p>
+					</div>
+
+					<div
+						class="border border-stone-200 p-10 rounded-2xl text-center reveal reveal-right hover:shadow-lg transition-all">
+						<div
+							class="w-16 h-16 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6">
+							<i class="fas fa-magic text-stone-400 text-2xl"></i>
+						</div>
+						<h3 class="text-xl font-medium tracking-wide mb-2 uppercase">
+							60-Minute Head Spa + Facial
+						</h3>
+						<p class="text-stone-500 font-light text-sm italic">
+							Holistic care for scalp & skin
+						</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-stone-50 border-y border-stone-200">
+			<div class="max-w-7xl mx-auto">
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+					<div class="reveal reveal-left">
+						<h2 class="text-3xl font-serif italic mb-10">Benefits</h2>
+						<ul class="space-y-8">
+							<li class="flex gap-6">
+								<div class="text-stone-900 text-xl">
+									<i class="fas fa-history"></i>
+								</div>
+								<div>
+									<h4
+										class="font-medium uppercase tracking-widest mb-1 text-sm">
+										Unused sessions roll over
+									</h4>
+									<p class="text-stone-500 font-light text-sm">
+										Credits stay valid for up to 12 months.
+									</p>
+								</div>
+							</li>
+							<li class="flex gap-6">
+								<div class="text-stone-900 text-xl">
+									<i class="fas fa-calendar-alt"></i>
+								</div>
+								<div>
+									<h4
+										class="font-medium uppercase tracking-widest mb-1 text-sm">
+										Flexible scheduling
+									</h4>
+									<p class="text-stone-500 font-light text-sm">
+										Book at your convenience with ease.
+									</p>
+								</div>
+							</li>
+							<li class="flex gap-6">
+								<div class="text-stone-900 text-xl">
+									<i class="fas fa-leaf"></i>
+								</div>
+								<div>
+									<h4
+										class="font-medium uppercase tracking-widest mb-1 text-sm">
+										No pressure to use monthly
+									</h4>
+									<p class="text-stone-500 font-light text-sm">
+										Consistency without the stress.
+									</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+
+					<div class="reveal reveal-right">
+						<h2 class="text-3xl font-serif italic mb-10">Member Privileges</h2>
+						<ul class="space-y-8">
+							<li class="flex gap-6">
+								<div class="text-stone-900 text-xl">
+									<i class="fas fa-percentage"></i>
+								</div>
+								<div>
+									<h4
+										class="font-medium uppercase tracking-widest mb-1 text-sm">
+										10% off retail products
+									</h4>
+									<p class="text-stone-500 font-light text-sm">
+										Take your home ritual to the next level.
+									</p>
+								</div>
+							</li>
+							<li class="flex gap-6">
+								<div class="text-stone-900 text-xl">
+									<i class="fas fa-star"></i>
+								</div>
+								<div>
+									<h4
+										class="font-medium uppercase tracking-widest mb-1 text-sm">
+										Priority booking
+									</h4>
+									<p class="text-stone-500 font-light text-sm">
+										Preferred access to our most wanted time slots.
+									</p>
+								</div>
+							</li>
+							<li class="flex gap-6">
+								<div class="text-stone-900 text-xl">
+									<i class="fas fa-user-check"></i>
+								</div>
+								<div>
+									<h4
+										class="font-medium uppercase tracking-widest mb-1 text-sm">
+										Personalized care
+									</h4>
+									<p class="text-stone-500 font-light text-sm">
+										Custom treatments tailored to your scalp's evolution.
+									</p>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-white">
+			<div class="max-w-4xl mx-auto reveal reveal-up">
+				<div
+					class="bg-stone-900 text-white p-12 md:p-20 rounded-[3rem] text-center shadow-2xl">
+					<p class="text-white/50 uppercase tracking-widest text-sm mb-4">
+						Membership Plan
+					</p>
+					<div class="mb-8">
+						<span class="text-5xl md:text-7xl font-serif italic">$148</span>
+						<span class="text-white/60 text-xl tracking-widest ml-2"
+							>/ month</span
+						>
+					</div>
+					<ul class="text-white/80 font-light space-y-4 mb-12">
+						<li class="flex items-center justify-center gap-3">
+							<i class="fas fa-check text-xs"></i> Includes one treatment per
+							month
+						</li>
+						<li class="flex items-center justify-center gap-3">
+							<i class="fas fa-check text-xs"></i> Convenient Auto-renewal
+						</li>
+						<li class="flex items-center justify-center gap-3">
+							<i class="fas fa-check text-xs"></i> Cancel anytime with no hidden
+							fees
+						</li>
+					</ul>
+					<a
+						href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+						class="inline-block bg-white text-stone-900 px-12 py-5 rounded-full text-sm uppercase tracking-widest hover:bg-stone-200 transition-all duration-300 shadow-xl"
+						>Begin Your Ritual</a
+					>
+				</div>
+			</div>
+		</section>
+
+		<footer class="py-16 px-6 lg:px-12 bg-white border-t border-stone-100">
+			<div
+				class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+				<div>
+					<h4
+						class="font-serif text-lg mb-6 uppercase tracking-widest text-stone-900">
+						Contact Us
+					</h4>
+					<p class="text-stone-500 font-light mb-3 leading-relaxed">
+						17W580 Butterfield Rd Suit G, 2F<br />Oakbrook Terrace, IL 60181
+					</p>
+					<p class="text-stone-500 font-light mb-3">
+						<a
+							href="tel:+16305903188"
+							class="hover:text-stone-900 transition-colors duration-300"
+							>(630) 590-3188</a
+						>
+					</p>
+					<p class="text-stone-500 font-light">
+						<a
+							href="mailto:tranquilityhydrotherapy@gmail.com"
+							class="hover:text-stone-900 transition-colors duration-300"
+							>tranquilityhydrotherapy@gmail.com</a
+						>
+					</p>
+				</div>
+				<div>
+					<h4
+						class="font-serif text-lg mb-6 uppercase tracking-widest text-stone-900">
+						Open Hours
+					</h4>
+					<div class="text-stone-500 font-light space-y-3">
+						<p class="flex justify-center md:justify-start gap-4">
+							<span class="w-24 text-stone-800 font-medium tracking-wide"
+								>MON - SUN</span
+							>
+							<span>10:00 AM - 8:00 PM</span>
+						</p>
+					</div>
+				</div>
+				<div
+					class="flex flex-col items-center md:items-end justify-center h-full mt-4 md:mt-0">
+					<div class="flex gap-8 text-2xl text-stone-400 mb-8">
+						<a
+							href="https://www.yelp.com/biz/tranquility-hydrotherapy-oakbrook-terrace-2"
+							target="_blank"
+							aria-label="Yelp"
+							class="hover:text-red-500 hover:scale-110 transition-all duration-300"
+							><i class="fab fa-yelp"></i
+						></a>
+						<a
+							href="https://www.facebook.com/p/Tranquility-Hydrotherapy-61570059159325/"
+							target="_blank"
+							aria-label="Facebook"
+							class="hover:text-blue-600 hover:scale-110 transition-all duration-300"
+							><i class="fab fa-facebook-f"></i
+						></a>
+						<a
+							href="https://www.instagram.com/tranquility.oakbrook/"
+							target="_blank"
+							aria-label="Instagram"
+							class="hover:text-pink-600 hover:scale-110 transition-all duration-300"
+							><i class="fab fa-instagram"></i
+						></a>
+					</div>
+					<div class="text-sm font-light text-stone-400 italic font-serif">
+						&copy; 2026 Tranquility Hydrotherapy. All rights reserved.
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<button
+			id="backToTopBtn"
+			class="fixed bottom-8 right-8 bg-stone-900 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-2xl opacity-0 invisible transition-all duration-500 hover:bg-stone-700 hover:-translate-y-2 z-50 focus:outline-none">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M5 10l7-7m0 0l7 7m-7-7v18" />
+			</svg>
+		</button>
+
+		<script src="script.js"></script>
+	</body>
+</html>

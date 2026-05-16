@@ -1,0 +1,730 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Services - Tranquility Hydrotherapy</title>
+
+		<link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+		<script src="https://cdn.tailwindcss.com"></script>
+
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+			rel="stylesheet" />
+
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body class="bg-stone-50 text-stone-900 antialiased overflow-x-hidden">
+		<nav
+			class="fixed w-full z-50 transition-all duration-300 glass-nav border-b border-stone-200/50"
+			id="mainNav">
+			<div class="max-w-7xl mx-auto px-6 lg:px-12">
+				<div class="flex justify-between items-center h-20">
+					<div class="text-xl tracking-[0.15em] font-light uppercase">
+						Tranquility Hydrotherapy
+					</div>
+					<div
+						class="hidden md:flex space-x-8 items-center text-sm tracking-wide uppercase">
+						<a href="index.html" class="hover:text-stone-500 transition-colors"
+							>Home</a
+						>
+						<a href="services.html" class="text-stone-500 transition-colors"
+							>Services</a
+						>
+						<a
+							href="membership.html"
+							class="hover:text-stone-500 transition-colors"
+							>Membership</a
+						>
+						<a
+							href="giftcard.html"
+							class="hover:text-stone-500 transition-colors"
+							>Gift Cards</a
+						>
+						<a
+							href="aboutus.html"
+							class="hover:text-stone-500 transition-colors"
+							>About</a
+						>
+						<a href="faq.html" class="hover:text-stone-500 transition-colors"
+							>FAQ</a
+						>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="bg-stone-900 text-white px-6 py-3 rounded-full hover:bg-stone-700 transition-all shadow-md"
+							>Book Now</a
+						>
+					</div>
+					<button
+						id="mobileMenuBtn"
+						class="md:hidden text-2xl focus:outline-none">
+						&#9776;
+					</button>
+				</div>
+			</div>
+		</nav>
+
+		<div
+			id="mobileMenu"
+			class="fixed inset-0 bg-white z-[60] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 px-6 shadow-2xl">
+			<button
+				id="closeMenuBtn"
+				class="absolute top-6 right-6 text-4xl text-stone-600 hover:text-stone-900 focus:outline-none">
+				&times;
+			</button>
+
+			<div
+				class="flex flex-col space-y-6 text-lg tracking-widest uppercase text-center mt-10">
+				<a
+					href="index.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Home</a
+				>
+				<a
+					href="services.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Services</a
+				>
+				<a
+					href="membership.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Membership</a
+				>
+				<a
+					href="giftcard.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>Gift Cards</a
+				>
+				<a
+					href="aboutus.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>About</a
+				>
+				<a
+					href="faq.html"
+					class="mobile-link text-stone-600 hover:text-stone-900"
+					>FAQ</a
+				>
+				<a
+					href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+					class="mobile-link bg-stone-900 text-white px-6 py-4 rounded-full mt-6 shadow-lg"
+					>Book Now</a
+				>
+			</div>
+		</div>
+
+		<section class="pt-40 pb-20 px-6 lg:px-12 bg-stone-100 text-center">
+			<div class="max-w-3xl mx-auto reveal reveal-up">
+				<h1 class="text-4xl md:text-5xl font-serif italic mb-8">
+					Where Your Ritual Begins
+				</h1>
+				<p class="text-stone-600 font-light leading-relaxed text-lg mb-6">
+					At Tranquility Hydrotherapy, your experience begins long before the
+					treatment starts. Step into a space designed for stillness—soft light,
+					calming aromas, and a quiet moment just for you.
+				</p>
+				<p class="text-stone-600 font-light leading-relaxed text-lg">
+					Wrapped in comfort, you'll unwind with herbal tea, gentle warmth, and
+					the feeling of finally slowing down. This is more than a service. It's
+					a ritual—one that restores balance, nourishes your scalp and skin, and
+					brings you back to yourself.
+				</p>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-white">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center mb-16 reveal reveal-up">
+					<p
+						class="text-stone-400 uppercase tracking-widest text-sm mb-2 font-semibold">
+						The Classics
+					</p>
+					<h2 class="text-3xl md:text-4xl font-serif italic">
+						Signature Head Spa Rituals
+					</h2>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+					<div
+						class="bg-stone-50 p-10 rounded-2xl reveal reveal-up delay-100 border border-stone-100 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-6">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">Essential Head Spa</h3>
+								<p class="text-stone-500 italic">60 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$128</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6">
+							A perfect introduction to deep relaxation and scalp health.
+						</p>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-3">
+								Highlights Included:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-2">
+								<li>&bull; Scalp Testing & Analysis</li>
+								<li>&bull; Essential Oil & Scalp Relaxation</li>
+								<li>&bull; Neck & Shoulder Massage</li>
+								<li>&bull; Deep Cleansing & Effectiveness Shampoo</li>
+								<li>&bull; Hydrotherapy Nano Evaporation & Steam</li>
+								<li>&bull; High-Frequency Antimicrobial Care</li>
+							</ul>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+
+					<div
+						class="bg-stone-50 p-10 rounded-2xl reveal reveal-up delay-200 border border-stone-100 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-6">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">Hydrating Head Spa</h3>
+								<p class="text-stone-500 italic">90 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$168</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6">
+							Extended relaxation with intense hydration and advanced therapy.
+						</p>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-3">
+								Highlights Included:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-2">
+								<li>&bull; All Essential Head Spa benefits</li>
+								<li>&bull; Healing Shampoo & Extended Spa Relaxation</li>
+								<li>&bull; Scalp Oxygenation</li>
+								<li>&bull; Professional Scalp Essence Introduction</li>
+								<li>&bull; Advanced Light Therapy</li>
+							</ul>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-stone-100">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center mb-16 reveal reveal-up">
+					<p
+						class="text-stone-400 uppercase tracking-widest text-sm mb-2 font-semibold">
+						Ultimate Rejuvenation
+					</p>
+					<h2 class="text-3xl md:text-4xl font-serif italic">
+						Head Spa & Facial
+					</h2>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+					<div
+						class="bg-white p-10 rounded-2xl reveal reveal-up delay-100 border border-stone-200 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-6">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">
+									Essential Head Spa & Facial
+								</h3>
+								<p class="text-stone-500 italic">60 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$168</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6">
+							A holistic treatment nourishing both skin and scalp for a radiant
+							glow.
+						</p>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-3">
+								Highlights Included:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-2">
+								<li>&bull; Facial Cleansing & Relaxation Massage</li>
+								<li>&bull; RF Energy Treatment for Firming</li>
+								<li>&bull; Hydrating/Purifying Facial Mask</li>
+								<li>&bull; Deep Scalp Cleansing & Nano Hydrotherapy</li>
+							</ul>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+
+					<div
+						class="bg-white p-10 rounded-2xl reveal reveal-up delay-200 border border-stone-200 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-6">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">
+									Luxury Head Spa & Facial
+								</h3>
+								<p class="text-stone-500 italic">90 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$208</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6">
+							The pinnacle of luxury. Complete head-to-toe relaxation and
+							anti-aging care.
+						</p>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-3">
+								Highlights Included:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-2">
+								<li>&bull; All Essential Facial & Spa benefits</li>
+								<li>&bull; Eye Ion Ball Treatment (targets dark circles)</li>
+								<li>&bull; Extended Micro-Mist Steam Therapy</li>
+								<li>&bull; High-Frequency Comb Antibacterial Care</li>
+							</ul>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-white">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center mb-16 reveal reveal-up">
+					<p
+						class="text-stone-400 uppercase tracking-widest text-sm mb-2 font-semibold">
+						Advanced Skincare
+					</p>
+					<h2 class="text-3xl md:text-4xl font-serif italic">
+						Clinical Facial Treatments
+					</h2>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+					<div
+						class="bg-stone-50 p-10 rounded-2xl reveal reveal-up delay-100 border border-stone-100 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-4">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">
+									ALGOMASK+ Customized Facial
+								</h3>
+								<p class="text-stone-500 italic">60 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$169</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6 text-sm">
+							Delivers instant radiance and long-lasting hydration. Suitable for
+							all skin types and conditions.
+						</p>
+						<div class="mb-6">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Benefits:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-1">
+								<li>
+									&bull; Moisturizes and tones the skin, reducing visible
+									redness
+								</li>
+								<li>
+									&bull; Provides instant radiance and maintains hydration
+								</li>
+								<li>&bull; Hydrates, soothes, and revitalizes</li>
+							</ul>
+						</div>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Recommended Frequency:
+							</h4>
+							<p class="text-sm font-light text-stone-600">
+								Intensive cure: 3–6 treatments (once a week). Maintenance: 1
+								treatment every 4 weeks.
+							</p>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+
+					<div
+						class="bg-stone-50 p-10 rounded-2xl reveal reveal-up delay-200 border border-stone-100 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-4">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">
+									Oxygenating Professional
+								</h3>
+								<p class="text-stone-500 italic">70 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$199</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6 text-sm">
+							A 5-step treatment with a unique Oxygen Complex and patented
+							Peptides to purify and restore glow.
+						</p>
+						<div class="mb-6">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Benefits:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-1">
+								<li>&bull; Minimizes breakouts & calms inflammation redness</li>
+								<li>&bull; Provides a mattifying effect for balanced skin</li>
+								<li>&bull; Restores luminosity and youthful glow</li>
+								<li>&bull; Color, paraben, alcohol, and fragrance-free</li>
+							</ul>
+						</div>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Recommended Frequency:
+							</h4>
+							<p class="text-sm font-light text-stone-600">
+								Maintenance: 1 treatment every 4 weeks.
+							</p>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+
+					<div
+						class="bg-stone-50 p-10 rounded-2xl reveal reveal-up delay-300 border border-stone-100 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-4">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">
+									HYDROLIFTING Professional
+								</h3>
+								<p class="text-stone-500 italic">70 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$199</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6 text-sm">
+							An uplifting treatment designed to restore firmness and youthful
+							appearance for sagging skin.
+						</p>
+						<div class="mb-6">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Benefits:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-1">
+								<li>&bull; Improves visible toning of face and neck</li>
+								<li>&bull; Provides deep and lasting hydration</li>
+								<li>&bull; Enhances radiance with age-defying results</li>
+							</ul>
+						</div>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Recommended Frequency:
+							</h4>
+							<p class="text-sm font-light text-stone-600">
+								Maintenance: 1 treatment every 3 weeks.
+							</p>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+
+					<div
+						class="bg-stone-50 p-10 rounded-2xl reveal reveal-up delay-400 border border-stone-100 hover:shadow-xl transition-shadow duration-300">
+						<div class="flex justify-between items-start mb-4">
+							<div>
+								<h3 class="text-2xl font-serif mb-1">Collagen-90 Clinical</h3>
+								<p class="text-stone-500 italic">80 min</p>
+							</div>
+							<div class="text-xl text-stone-900">$229</div>
+						</div>
+						<p class="text-stone-600 font-light mb-6 text-sm">
+							A prestigious, rejuvenating treatment featuring Collagen 90-II to
+							reduce visible signs of aging.
+						</p>
+						<div class="mb-6">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Benefits:
+							</h4>
+							<ul class="text-sm font-light text-stone-600 space-y-1">
+								<li>&bull; Minimizes fine lines and wrinkles</li>
+								<li>&bull; Rejuvenates and tightens for flawless skin</li>
+								<li>&bull; Deeply hydrates for a plump, radiant complexion</li>
+							</ul>
+						</div>
+						<div class="mb-8">
+							<h4 class="text-xs uppercase tracking-widest text-stone-400 mb-2">
+								Recommended Frequency:
+							</h4>
+							<p class="text-sm font-light text-stone-600">
+								Maintenance: 1 treatment every 4 weeks.
+							</p>
+						</div>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="inline-block w-full text-center border border-stone-300 py-3 rounded-full text-xs uppercase tracking-widest hover:bg-stone-900 hover:text-white transition-all"
+							>Book Now</a
+						>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 lg:px-12 bg-stone-100">
+			<div class="max-w-7xl mx-auto">
+				<div class="text-center mb-16 reveal reveal-up">
+					<p
+						class="text-stone-400 uppercase tracking-widest text-sm mb-2 font-semibold">
+						Specialized Care
+					</p>
+					<h2 class="text-3xl md:text-4xl font-serif italic">
+						Targeted Scalp Therapies
+					</h2>
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+					<div
+						class="p-8 border border-stone-200 rounded-2xl bg-white reveal reveal-up delay-100 hover:shadow-md transition-shadow">
+						<h3 class="text-xl font-serif mb-2">Purifying Scalp Therapy</h3>
+						<div class="text-stone-500 italic text-sm mb-4">90 min | $198</div>
+						<p class="text-stone-600 font-light text-sm mb-6 leading-relaxed">
+							Designed to relieve itchiness, reduce inflammation, and eliminate
+							dandruff using microcurrent ion therapy and negative ion oxygen
+							infusion.
+						</p>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="text-xs uppercase tracking-widest border-b border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition-all"
+							>Book Therapy</a
+						>
+					</div>
+
+					<div
+						class="p-8 border border-stone-200 rounded-2xl bg-white reveal reveal-up delay-200 hover:shadow-md transition-shadow">
+						<h3 class="text-xl font-serif mb-2">Regrowth Scalp Therapy</h3>
+						<div class="text-stone-500 italic text-sm mb-4">90 min | $198</div>
+						<p class="text-stone-600 font-light text-sm mb-6 leading-relaxed">
+							An anti-aging regimen utilizing Low-Level Laser Therapy
+							Regeneration to prevent hair loss, heal the scalp, and promote
+							healthy growth.
+						</p>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="text-xs uppercase tracking-widest border-b border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition-all"
+							>Book Therapy</a
+						>
+					</div>
+
+					<div
+						class="p-8 border border-stone-200 rounded-2xl bg-white reveal reveal-up delay-300 hover:shadow-md transition-shadow">
+						<h3 class="text-xl font-serif mb-2">Calming Scalp Therapy</h3>
+						<div class="text-stone-500 italic text-sm mb-4">90 min | $198</div>
+						<p class="text-stone-600 font-light text-sm mb-6 leading-relaxed">
+							For sensitive or damaged scalps. Features an
+							epithelial-regenerating mask and gentle hypoallergenic care to
+							repair the skin barrier.
+						</p>
+						<a
+							href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+							class="text-xs uppercase tracking-widest border-b border-stone-900 pb-1 hover:text-stone-500 hover:border-stone-500 transition-all"
+							>Book Therapy</a
+						>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 bg-stone-900 overflow-hidden text-white">
+			<div
+				class="max-w-7xl mx-auto px-6 lg:px-12 flex flex-col md:flex-row items-center gap-16">
+				<div class="w-full md:w-1/2 reveal reveal-left">
+					<div class="relative">
+						<img
+							src="images/duo.jpg"
+							alt="Duo Spa"
+							class="w-full rounded-[2rem] shadow-2xl opacity-90" />
+					</div>
+				</div>
+				<div class="w-full md:w-1/2 space-y-8 reveal reveal-right">
+					<div class="space-y-2">
+						<p
+							class="text-white/50 uppercase tracking-widest text-sm font-semibold">
+							Perfect for Couples, Friends & Family
+						</p>
+						<h2 class="text-4xl md:text-5xl font-serif italic leading-tight">
+							Duo Spa Experiences
+						</h2>
+					</div>
+					<div class="space-y-6 text-lg font-light text-white/80">
+						<div>
+							<h4 class="font-medium text-white tracking-wide mb-1">
+								Head Spa x2
+							</h4>
+							<p class="text-sm">
+								Two guests enjoy head spa together side by side.
+							</p>
+						</div>
+						<div>
+							<h4 class="font-medium text-white tracking-wide mb-1">
+								Head Spa + Facial
+							</h4>
+							<p class="text-sm">
+								Full relaxation combined with skin rejuvenation.
+							</p>
+						</div>
+						<div>
+							<h4 class="font-medium text-white tracking-wide mb-1">
+								Mix & Match
+							</h4>
+							<p class="text-sm">
+								Each guest chooses their own personalized service.
+							</p>
+						</div>
+					</div>
+					<a
+						href="https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq"
+						class="inline-block bg-white text-stone-900 px-10 py-4 rounded-full text-sm uppercase tracking-widest hover:bg-stone-200 transition-all duration-300"
+						>Book Duo Experience</a
+					>
+				</div>
+			</div>
+		</section>
+
+		<section class="py-24 px-6 text-center bg-stone-50">
+			<div class="max-w-3xl mx-auto reveal reveal-up">
+				<h2 class="text-3xl font-serif italic mb-6">Premium Products We Use</h2>
+				<p class="text-stone-600 font-light text-lg mb-12">
+					We use high-quality professional products to deliver the best results
+					for your scalp and skin.
+				</p>
+
+				<div
+					class="flex flex-col md:flex-row justify-center items-center gap-12 md:gap-24">
+					<div class="flex flex-col items-center">
+						<div
+							class="w-24 h-24 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 border border-stone-100 text-stone-400">
+							<i class="fas fa-leaf text-3xl"></i>
+						</div>
+						<h4
+							class="font-medium text-stone-900 tracking-widest uppercase mb-1">
+							O WAY
+						</h4>
+						<p class="text-stone-500 text-sm font-light">Organic Scalp Care</p>
+					</div>
+
+					<div class="flex flex-col items-center">
+						<div
+							class="w-24 h-24 rounded-full bg-white shadow-sm flex items-center justify-center mb-4 border border-stone-100 text-stone-400">
+							<i class="fas fa-spa text-3xl"></i>
+						</div>
+						<h4
+							class="font-medium text-stone-900 tracking-widest uppercase mb-1">
+							GM Collin
+						</h4>
+						<p class="text-stone-500 text-sm font-light">Advanced Skincare</p>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<footer class="py-16 px-6 lg:px-12 bg-white border-t border-stone-100">
+			<div
+				class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-left">
+				<div>
+					<h4
+						class="font-serif text-lg mb-6 uppercase tracking-widest text-stone-900">
+						Contact Us
+					</h4>
+					<p class="text-stone-500 font-light mb-3 leading-relaxed">
+						17W580 Butterfield Rd Suit G, 2F<br />Oakbrook Terrace, IL 60181
+					</p>
+					<p class="text-stone-500 font-light mb-3">
+						<a
+							href="tel:+16305903188"
+							class="hover:text-stone-900 transition-colors duration-300"
+							>(630) 590-3188</a
+						>
+					</p>
+					<p class="text-stone-500 font-light">
+						<a
+							href="mailto:tranquilityhydrotherapy@gmail.com"
+							class="hover:text-stone-900 transition-colors duration-300"
+							>tranquilityhydrotherapy@gmail.com</a
+						>
+					</p>
+				</div>
+				<div>
+					<h4
+						class="font-serif text-lg mb-6 uppercase tracking-widest text-stone-900">
+						Open Hours
+					</h4>
+					<div class="text-stone-500 font-light space-y-3">
+						<p class="flex justify-center md:justify-start gap-4">
+							<span class="w-24 text-stone-800 font-medium tracking-wide"
+								>MON - SUN</span
+							>
+							<span>10:00 AM - 8:00 PM</span>
+						</p>
+					</div>
+				</div>
+				<div
+					class="flex flex-col items-center md:items-end justify-center h-full mt-4 md:mt-0">
+					<div class="flex gap-8 text-2xl text-stone-400 mb-8">
+						<a
+							href="https://www.yelp.com/biz/tranquility-hydrotherapy-oakbrook-terrace-2"
+							target="_blank"
+							aria-label="Yelp"
+							class="hover:text-red-500 hover:scale-110 transition-all duration-300"
+							><i class="fab fa-yelp"></i
+						></a>
+						<a
+							href="https://www.facebook.com/p/Tranquility-Hydrotherapy-61570059159325/"
+							target="_blank"
+							aria-label="Facebook"
+							class="hover:text-blue-600 hover:scale-110 transition-all duration-300"
+							><i class="fab fa-facebook-f"></i
+						></a>
+						<a
+							href="https://www.instagram.com/tranquility.oakbrook/"
+							target="_blank"
+							aria-label="Instagram"
+							class="hover:text-pink-600 hover:scale-110 transition-all duration-300"
+							><i class="fab fa-instagram"></i
+						></a>
+					</div>
+					<div class="text-sm font-light text-stone-400 italic font-serif">
+						&copy; 2026 Tranquility Hydrotherapy. All rights reserved.
+					</div>
+				</div>
+			</div>
+		</footer>
+
+		<button
+			id="backToTopBtn"
+			class="fixed bottom-8 right-8 bg-stone-900 text-white w-12 h-12 rounded-full flex items-center justify-center shadow-2xl opacity-0 invisible transition-all duration-500 hover:bg-stone-700 hover:-translate-y-2 z-50 focus:outline-none">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor">
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M5 10l7-7m0 0l7 7m-7-7v18" />
+			</svg>
+		</button>
+
+		<script src="script.js"></script>
+	</body>
+</html>
