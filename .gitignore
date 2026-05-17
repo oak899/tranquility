@@ -1,0 +1,11 @@
+.env
+.env.local
+.env.*.local
+.vercel
+node_modules/
+api/node_modules/
+web2/node_modules/
+web2/_vercel-analytics.mjs
+app/build/
+**/.dart_tool/
+.env*.local

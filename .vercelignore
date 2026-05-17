@@ -1,0 +1,38 @@
+# Flutter app (~700MB+) — not used by Vercel web/API deploy
+app/
+
+# Legacy static mirror
+web/
+
+# Local scripts, SQL migrations (run in Supabase dashboard)
+scripts/
+supabase/
+
+# Git metadata
+.git/
+.gitignore
+
+# Secrets & local env
+.env
+.env.*
+!.env.example
+
+# IDE / agent
+.cursor/
+.vscode/
+.agent-transcripts/
+
+# Docs (optional for deploy)
+*.md
+!web2/**/*.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Dependencies installed on Vercel build (api/installCommand)
+api/node_modules/
+
+# Flutter / Dart caches if ever at repo root
+**/.dart_tool/
+**/build/

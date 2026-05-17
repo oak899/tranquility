@@ -1,0 +1,10 @@
+{
+  "installCommand": "npm install --prefix api && npm install --prefix web2",
+  "buildCommand": "cp web2/node_modules/@vercel/analytics/dist/index.mjs web2/_vercel-analytics.mjs",
+  "outputDirectory": "web2",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ]
+}

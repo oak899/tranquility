@@ -2,20 +2,26 @@ import 'dart:math' as math;
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart' show Ticker;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'booking_page.dart';
+import 'consultation_forms.dart';
+
 const Color kGold = Color(0xFFC49B63);
 const Color kCharcoal = Color(0xFF1A1A1A);
 const Color kCream = Color(0xFFF8F5F0);
-const String kBookNowUrl =
-    'https://www.orderonlinehub.com/servicesnostaff/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq';
 
 /// Social links from https://tranquilityhydrotherapy.com/index.html
 const String kInstagramUrl = 'https://www.instagram.com/tranquility.oakbrook/';
 const String kFacebookUrl = 'https://www.facebook.com/p/Tranquility-Hydrotherapy-61570059159325/';
 const String kYelpUrl = 'https://www.yelp.com/biz/tranquility-hydrotherapy-oakbrook-terrace-2';
+
+/// Order Online Hub gift-card list (not the visit booking flow).
+const String kGiftCardPurchaseUrl =
+    'https://www.orderonlinehub.com/tranquilityhydrotherapy_hf8w7q93ghgf8926q3vr9q2g8vrt6gq/gift-card-list';
 
 /// Opens in Google Maps (search) for the salon address.
 const String kSalonGoogleMapsUrl =
@@ -38,11 +44,6 @@ const String kOwayBrandIconUrl =
     'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://pro.owayusa.com&size=128';
 const String kGmCollinBrandIconUrl =
     'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://gmcollin.com&size=128';
-
-Future<bool> launchTranquilityBookingUrl() async {
-  final Uri uri = Uri.parse(kBookNowUrl);
-  return launchUrl(uri, mode: LaunchMode.externalApplication);
-}
 
 Future<bool> launchExternalUrl(String url) async {
   final Uri? uri = Uri.tryParse(url);
@@ -159,17 +160,14 @@ class _SiteShellState extends State<SiteShell> {
   }
 
   void _bookNow() {
-    launchTranquilityBookingUrl().then((bool ok) {
-      if (!mounted || ok) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not open the booking page.')),
-      );
-    });
+    openTranquilityBooking(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      backgroundColor: kCharcoal,
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 420),
         switchInCurve: Curves.easeOutCubic,
@@ -199,10 +197,13 @@ class _SiteShellState extends State<SiteShell> {
       floatingActionButton: _AnimatedBookFab(onTap: _bookNow),
       bottomNavigationBar: BottomAppBar(
         color: kCharcoal,
+        elevation: 0,
+        height: 64,
+        padding: EdgeInsets.zero,
         shape: const CircularNotchedRectangle(),
-        notchMargin: 8,
+        notchMargin: 6,
         child: SizedBox(
-          height: 66,
+          height: 64,
           child: Row(
             children: <Widget>[
               _BottomTabButton(
@@ -350,12 +351,271 @@ class _RevealStagger extends StatelessWidget {
   }
 }
 
+/// Shown after seven taps on the Home hero logo within five seconds.
+class _FireworkParticle {
+  _FireworkParticle({
+    required this.origin,
+    required this.angle,
+    required this.speed,
+    required this.color,
+    required this.size,
+    required this.life,
+    required this.drag,
+  });
+
+  final Offset origin;
+  final double angle;
+  double speed;
+  final Color color;
+  final double size;
+  double life;
+  double distance = 0;
+  final double drag;
+}
+
+class _JohnnyAngelEasterEgg extends StatefulWidget {
+  const _JohnnyAngelEasterEgg({required this.onDismiss});
+
+  final VoidCallback onDismiss;
+
+  @override
+  State<_JohnnyAngelEasterEgg> createState() => _JohnnyAngelEasterEggState();
+}
+
+class _JohnnyAngelEasterEggState extends State<_JohnnyAngelEasterEgg> with SingleTickerProviderStateMixin {
+  static const Color _parchment = Color(0xFFF2E8DC);
+  static const Color _panel = Color(0xFF2A2622);
+
+  static const double _duration = 2.85;
+  static const List<Color> _burstPalette = <Color>[
+    kGold,
+    Color(0xFFFFE8B8),
+    Color(0xFFE8A87C),
+    Color(0xFFFF6B6B),
+    Color(0xFFFFD93D),
+    _parchment,
+    Colors.white,
+  ];
+
+  late final Ticker _ticker;
+  Duration _prevElapsed = Duration.zero;
+  double _elapsed = 0;
+  double _scrimOpacity = 0;
+  double _titleScale = 0;
+  double _titleGlow = 0;
+  final List<_FireworkParticle> _particles = <_FireworkParticle>[];
+  final math.Random _rng = math.Random();
+  final Set<int> _burstMarks = <int>{};
+
+  @override
+  void initState() {
+    super.initState();
+    _ticker = createTicker(_onTick)..start();
+  }
+
+  void _spawnBurst(Offset center, {int count = 42, double speedScale = 1}) {
+    for (int i = 0; i < count; i++) {
+      final double angle = _rng.nextDouble() * math.pi * 2;
+      final double speed = (120 + _rng.nextDouble() * 280) * speedScale;
+      _particles.add(
+        _FireworkParticle(
+          origin: center,
+          angle: angle,
+          speed: speed,
+          color: _burstPalette[_rng.nextInt(_burstPalette.length)],
+          size: 2.2 + _rng.nextDouble() * 3.8,
+          life: 0.75 + _rng.nextDouble() * 0.35,
+          drag: 0.9 + _rng.nextDouble() * 0.06,
+        ),
+      );
+    }
+  }
+
+  void _maybeBurst(double t, double mark, Offset center, {int count = 40}) {
+    if (_burstMarks.contains((mark * 1000).round())) return;
+    if (t < mark) return;
+    _burstMarks.add((mark * 1000).round());
+    _spawnBurst(center, count: count);
+  }
+
+  void _onTick(Duration elapsed) {
+    if (!mounted) return;
+    final double dt = _prevElapsed == Duration.zero
+        ? 0.0
+        : (elapsed - _prevElapsed).inMicroseconds / 1000000.0;
+    _prevElapsed = elapsed;
+    if (dt <= 0 || dt > 0.05) return;
+
+    _elapsed += dt;
+    final double t = _elapsed;
+
+    final Size size = MediaQuery.sizeOf(context);
+    final Offset center = Offset(size.width * 0.5, size.height * 0.42);
+    final Offset left = Offset(size.width * 0.28, size.height * 0.52);
+    final Offset right = Offset(size.width * 0.72, size.height * 0.48);
+
+    _scrimOpacity = (t / 0.35 * 0.42).clamp(0.0, 0.42);
+    if (t > _duration - 0.55) {
+      _scrimOpacity = (0.42 * (1 - (t - (_duration - 0.55)) / 0.55)).clamp(0.0, 0.42);
+    }
+
+    final double titleIn = Curves.elasticOut.transform((t / 0.55).clamp(0.0, 1.0));
+    _titleScale = titleIn;
+    _titleGlow = (math.sin(t * 5.5) * 0.5 + 0.5) * (t < _duration - 0.5 ? 1.0 : 0.0);
+
+    _maybeBurst(t, 0.05, center, count: 56);
+    _maybeBurst(t, 0.42, left, count: 36);
+    _maybeBurst(t, 0.68, right, count: 36);
+    _maybeBurst(t, 0.95, Offset(size.width * 0.5, size.height * 0.58), count: 48);
+
+    for (final _FireworkParticle p in _particles) {
+      p.distance += p.speed * dt;
+      p.speed *= math.pow(p.drag, dt * 60);
+      p.life -= dt * 0.95;
+    }
+    _particles.removeWhere((_FireworkParticle p) => p.life <= 0);
+
+    if (t >= _duration) {
+      _ticker.stop();
+      widget.onDismiss();
+      return;
+    }
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _ticker.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double fadeOut = _elapsed > _duration - 0.5
+        ? (1 - (_elapsed - (_duration - 0.5)) / 0.5).clamp(0.0, 1.0)
+        : 1.0;
+
+    return AbsorbPointer(
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          ColoredBox(color: Colors.black.withOpacity(_scrimOpacity)),
+          CustomPaint(
+            painter: _FireworksPainter(particles: _particles, globalOpacity: fadeOut),
+            size: Size.infinite,
+          ),
+          Center(
+            child: Opacity(
+              opacity: fadeOut,
+              child: Transform.scale(
+                scale: _titleScale.clamp(0.0, 1.15),
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: _panel.withOpacity(0.92),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: kGold.withOpacity(0.35 + _titleGlow * 0.45),
+                      width: 1.5,
+                    ),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: kGold.withOpacity(0.25 + _titleGlow * 0.35),
+                        blurRadius: 28 + _titleGlow * 18,
+                        spreadRadius: 2,
+                      ),
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.35),
+                        blurRadius: 24,
+                        offset: const Offset(0, 12),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 18),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          'Johnny',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: _parchment,
+                            height: 1.05,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Icon(
+                            Icons.favorite_rounded,
+                            color: kGold.withOpacity(0.85 + _titleGlow * 0.15),
+                            size: 28,
+                          ),
+                        ),
+                        Text(
+                          'Angel',
+                          style: GoogleFonts.playfairDisplay(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w700,
+                            color: _parchment,
+                            height: 1.05,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FireworksPainter extends CustomPainter {
+  const _FireworksPainter({
+    required this.particles,
+    required this.globalOpacity,
+  });
+
+  final List<_FireworkParticle> particles;
+  final double globalOpacity;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (globalOpacity <= 0) return;
+    for (final _FireworkParticle p in particles) {
+      final double alpha = (p.life.clamp(0.0, 1.0) * globalOpacity).clamp(0.0, 1.0);
+      if (alpha <= 0.02) continue;
+      final Offset pos = p.origin +
+          Offset(math.cos(p.angle) * p.distance, math.sin(p.angle) * p.distance);
+      final Paint core = Paint()
+        ..color = p.color.withOpacity(alpha)
+        ..style = PaintingStyle.fill;
+      canvas.drawCircle(pos, p.size, core);
+      final Paint trail = Paint()
+        ..color = p.color.withOpacity(alpha * 0.35)
+        ..strokeWidth = p.size * 0.65
+        ..strokeCap = StrokeCap.round;
+      final Offset tail = pos -
+          Offset(math.cos(p.angle) * p.size * 4.5, math.sin(p.angle) * p.size * 4.5);
+      canvas.drawLine(tail, pos, trail);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _FireworksPainter oldDelegate) => true;
+}
+
 class _HomeImmersiveHero extends StatelessWidget {
   const _HomeImmersiveHero({
     required this.viewportHeight,
     required this.parallaxOffset,
     required this.primaryAsset,
     required this.overlayAsset,
+    required this.onLogoTap,
     required this.logoAnim,
     required this.titleAnim,
     required this.subAnim,
@@ -368,6 +628,7 @@ class _HomeImmersiveHero extends StatelessWidget {
   final String primaryAsset;
   /// Optional second photo blended softly over [primaryAsset]; empty string means skip.
   final String overlayAsset;
+  final VoidCallback onLogoTap;
   final Animation<double> logoAnim;
   final Animation<double> titleAnim;
   final Animation<double> subAnim;
@@ -499,35 +760,42 @@ class _HomeImmersiveHero extends StatelessWidget {
                     animation: logoAnim,
                     child: Transform.scale(
                       scale: 0.94 + 0.06 * logoAnim.value,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color: kHeroGlass.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: kHeroBorder.withOpacity(0.28)),
-                              boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.28),
-                                  blurRadius: 22,
-                                  offset: const Offset(0, 12),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: onLogoTap,
+                          borderRadius: BorderRadius.circular(20),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                              child: DecoratedBox(
+                                decoration: BoxDecoration(
+                                  color: kHeroGlass.withOpacity(0.5),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: kHeroBorder.withOpacity(0.28)),
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.28),
+                                      blurRadius: 22,
+                                      offset: const Offset(0, 12),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
-                              child: SizedBox(
-                                height: logoMaxH,
-                                child: ColorFiltered(
-                                  colorFilter: const ColorFilter.mode(
-                                    Color(0xFFE8D5C4),
-                                    BlendMode.srcIn,
-                                  ),
-                                  child: SvgPicture.asset(
-                                    'assets/images/logo.svg',
-                                    fit: BoxFit.contain,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 14),
+                                  child: SizedBox(
+                                    height: logoMaxH,
+                                    child: ColorFiltered(
+                                      colorFilter: const ColorFilter.mode(
+                                        Color(0xFFE8D5C4),
+                                        BlendMode.srcIn,
+                                      ),
+                                      child: SvgPicture.asset(
+                                        'assets/images/logo.svg',
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -781,6 +1049,11 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
   late final AnimationController _entrance;
   late String _heroPrimaryAsset;
   late String _heroOverlayAsset;
+  int _logoTapCount = 0;
+  DateTime? _logoSequenceStart;
+  bool _showJohnnyAngel = false;
+
+  static const Duration _kLogoTapWindow = Duration(seconds: 5);
 
   void _shuffleHeroArt() {
     final math.Random r = math.Random();
@@ -808,6 +1081,30 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
 
   void _onScroll() {
     if (mounted) setState(() {});
+  }
+
+  void _onHeroLogoTap() {
+    final DateTime now = DateTime.now();
+    if (_logoSequenceStart == null || now.difference(_logoSequenceStart!) > _kLogoTapWindow) {
+      _logoSequenceStart = now;
+      _logoTapCount = 1;
+      setState(() {});
+      return;
+    }
+    _logoTapCount += 1;
+    if (_logoTapCount < 7) {
+      setState(() {});
+      return;
+    }
+    if (now.difference(_logoSequenceStart!) > _kLogoTapWindow) {
+      _logoSequenceStart = now;
+      _logoTapCount = 1;
+      setState(() {});
+      return;
+    }
+    _logoTapCount = 0;
+    _logoSequenceStart = null;
+    setState(() => _showJohnnyAngel = true);
   }
 
   @override
@@ -848,13 +1145,16 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
     final Animation<double> storiesBlock = _seg(0.78, 0.95);
     final Animation<double> ctaAnim = _seg(0.82, 1.0);
 
-    return _PageBackground(
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          final double viewportH = constraints.maxHeight.isFinite
-              ? constraints.maxHeight
-              : MediaQuery.sizeOf(context).height;
-          return RefreshIndicator(
+    return Stack(
+      fit: StackFit.expand,
+      children: <Widget>[
+        _PageBackground(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              final double viewportH = constraints.maxHeight.isFinite
+                  ? constraints.maxHeight
+                  : MediaQuery.sizeOf(context).height;
+              return RefreshIndicator(
             color: kGold,
             backgroundColor: kCream,
             onRefresh: () async {
@@ -863,7 +1163,9 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             },
             child: ListView(
               controller: _scroll,
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(
+                bottom: 88 + MediaQuery.viewPaddingOf(context).bottom,
+              ),
               physics: const AlwaysScrollableScrollPhysics(
                 parent: BouncingScrollPhysics(),
               ),
@@ -873,6 +1175,7 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
                   parallaxOffset: px,
                   primaryAsset: _heroPrimaryAsset,
                   overlayAsset: _heroOverlayAsset,
+                  onLogoTap: _onHeroLogoTap,
                   logoAnim: heroLogo,
                   titleAnim: heroTitle,
                   subAnim: heroSub,
@@ -976,8 +1279,18 @@ class _HomePageState extends State<HomePage> with SingleTickerProviderStateMixin
             ],
             ),
           );
-        },
-      ),
+            },
+          ),
+        ),
+        if (_showJohnnyAngel)
+          Positioned.fill(
+            child: _JohnnyAngelEasterEgg(
+              onDismiss: () {
+                setState(() => _showJohnnyAngel = false);
+              },
+            ),
+          ),
+      ],
     );
   }
 }
@@ -1684,14 +1997,7 @@ class _BookRitualCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
-              onPressed: () {
-                launchTranquilityBookingUrl().then((bool ok) {
-                  if (!context.mounted || ok) return;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Could not open the booking page.')),
-                  );
-                });
-              },
+              onPressed: () => openTranquilityBooking(context),
               child: Text(
                 'Book your visit',
                 style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700),
@@ -1719,6 +2025,22 @@ class _AboutQuickLinksCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
+          ListTile(
+            leading: const Icon(Icons.assignment_outlined, color: kGold),
+            title: Text('Facial consultation', style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text('Client intake for facial services', style: Theme.of(context).textTheme.bodySmall),
+            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
+            onTap: () => _open(context, const FacialConsultationPage()),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.water_drop_outlined, color: kGold),
+            title: Text('Head spa consultation', style: Theme.of(context).textTheme.titleMedium),
+            subtitle: Text('Preferences & scalp intake', style: Theme.of(context).textTheme.bodySmall),
+            trailing: const Icon(Icons.chevron_right_rounded, color: kGold),
+            onTap: () => _open(context, const HeadSpaConsultationPage()),
+          ),
+          const Divider(height: 1),
           ListTile(
             leading: const Icon(Icons.help_outline_rounded, color: kGold),
             title: Text('FAQ', style: Theme.of(context).textTheme.titleMedium),
@@ -2930,10 +3252,21 @@ class _PremiumProductsPanel extends StatelessWidget {
 }
 
 class _BookNowLaunchCard extends StatelessWidget {
-  const _BookNowLaunchCard({this.headline = 'Book now', this.subline = 'Reserve your visit online'});
+  const _BookNowLaunchCard({
+    this.headline = 'Book now',
+    this.subline = 'Reserve your visit online',
+    this.onTap,
+    this.trailingCaption = 'Tap to book in the app',
+    this.leadingIcon = Icons.event_available_rounded,
+    this.hintIcon = Icons.event_note_rounded,
+  });
 
   final String headline;
   final String subline;
+  final VoidCallback? onTap;
+  final String trailingCaption;
+  final IconData leadingIcon;
+  final IconData hintIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -2941,14 +3274,11 @@ class _BookNowLaunchCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () {
-          launchTranquilityBookingUrl().then((bool ok) {
-            if (!context.mounted || ok) return;
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Could not open the booking page.')),
-            );
-          });
-        },
+        onTap:
+            onTap ??
+            () {
+              openTranquilityBooking(context);
+            },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 20),
           child: Row(
@@ -2959,7 +3289,7 @@ class _BookNowLaunchCard extends StatelessWidget {
                   color: kGold.withOpacity(0.22),
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(Icons.event_available_rounded, color: kCharcoal, size: 34),
+                child: Icon(leadingIcon, color: kCharcoal, size: 34),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -2988,10 +3318,10 @@ class _BookNowLaunchCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.open_in_new_rounded, size: 16, color: kGold.withOpacity(0.95)),
+                        Icon(hintIcon, size: 16, color: kGold.withOpacity(0.95)),
                         const SizedBox(width: 6),
                         Text(
-                          'Tap to open in browser',
+                          trailingCaption,
                           style: GoogleFonts.inter(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -3605,7 +3935,7 @@ class MembershipPage extends StatelessWidget {
           const _MembershipPlanCard(),
           const _BookNowLaunchCard(
             headline: 'Begin your ritual',
-            subline: 'Join or manage membership through our booking site',
+            subline: 'Request a visit from the app — we will follow up about membership',
           ),
           const SizedBox(height: 22),
           Text(
@@ -3638,9 +3968,20 @@ class MembershipPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          const _BookNowLaunchCard(
+          _BookNowLaunchCard(
             headline: 'Buy gift card',
             subline: 'Purchase online — redeem in store',
+            onTap: () {
+              launchExternalUrl(kGiftCardPurchaseUrl).then((bool ok) {
+                if (!context.mounted || ok) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Could not open the gift card page.')),
+                );
+              });
+            },
+            trailingCaption: 'Tap to open in browser',
+            leadingIcon: Icons.card_giftcard_rounded,
+            hintIcon: Icons.open_in_new_rounded,
           ),
         ],
       ),
@@ -3993,8 +4334,8 @@ class _AnimatedBookFabState extends State<_AnimatedBookFab> with SingleTickerPro
       builder: (_, __) {
         final double pulseScale = 1 + (_pulse.value * 0.035);
         return SizedBox(
-          width: 74,
-          height: 74,
+          width: 68,
+          height: 68,
           child: GestureDetector(
             onTapDown: (_) => setState(() => _pressed = true),
             onTapCancel: () => setState(() => _pressed = false),

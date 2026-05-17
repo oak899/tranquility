@@ -136,3 +136,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 });
+
+/* Vercel Web Analytics (static site — use @vercel/analytics, not /next) */
+(function () {
+	const s = document.createElement("script");
+	s.type = "module";
+	s.src = "/vercel-analytics.js";
+	document.body.appendChild(s);
+})();
