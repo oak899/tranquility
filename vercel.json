@@ -1,6 +1,6 @@
 {
   "installCommand": "npm install --prefix api && npm install --prefix web2",
-  "buildCommand": "cp web2/node_modules/@vercel/analytics/dist/index.mjs web2/_vercel-analytics.mjs",
+  "buildCommand": "cp web2/node_modules/@vercel/analytics/dist/index.mjs web2/_vercel-analytics.mjs && cp web2/node_modules/@vercel/speed-insights/dist/index.mjs web2/_vercel-speed-insights.mjs",
   "outputDirectory": "web2",
   "cleanUrls": true,
   "trailingSlash": false,
